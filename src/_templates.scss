@@ -1,0 +1,407 @@
+@import './responsive.scss';
+@import './_global.scss';
+@import './ribbons.scss';
+@import './_forms.scss';
+
+templates-cont-r {
+  margin: 0 0 0 10rem;
+}
+
+ .templates-code {
+  border: 1px solid $dapple-gray;
+  border-radius: 5px;
+  background: $cloud-gray;
+  max-height: 5rem;
+  max-width: 20rem;
+  overflow-y: scroll;
+  padding: 1rem;
+}
+
+ .t-ribbon-1 {
+  @extend .ribbon-2;
+}
+
+ .t-ribbon-1-tl {
+  @extend .ribbon-2-tl;
+}
+
+ .t-ribbon-1-tr {
+  @extend .ribbon-2-tr;
+}
+
+ .t-ribbon-1-card {
+  @extend .card;
+  margin: 0 0 1rem 0;
+  padding: 1rem 0;
+}
+
+ .t-ribbon-1-card-2 {
+  @extend .card;
+  margin: 0 0 1rem 0;
+  padding: 0 0 1rem 0;
+}
+
+ .t-ribbon-1-wrap {
+  @extend .form-ribbon;
+}
+
+ .t-ribbon-1-card-txt {
+  padding: 1rem 1rem 0 1rem;
+}
+
+ .t-ribbon-2 {
+  @extend .ribbon-1;
+  content: "";
+  position: relative;
+}
+
+ .t-ribbon-2-card {
+  @extend .card;
+  padding: 1rem;
+  position: relative;
+  margin: 0 0 1rem 0;
+
+   h1, h2, h3, h4 {
+    margin-top: 0;
+  }
+}
+
+ .t-ribbon-sect-card {
+  @extend .card;
+  padding: 1rem 0 0 0;
+  margin: 0 0 1rem 0;
+}
+
+ .t-ribbon-sect {
+  padding: 0 1rem 1rem 1rem;
+}
+
+ .t-ribbon-3 {
+  @extend .ribbon-3;
+  margin: 0 4rem 1rem -10px;
+}
+
+ .t-ribbon-4 {
+  @extend .ribbon-4;
+}
+
+ .t-card {
+  @extend .card;
+  margin: 0 0 1rem 0;
+  padding: 1rem;
+}
+
+ .t-img-card {
+  @extend .card;
+  display: flex;
+  margin: 0 0 1rem 0;
+  overflow: hidden;
+
+   img {
+    @extend .shadow;
+  }
+}
+
+ .t-img-card-txt {
+  flex: 1;
+  padding: 1rem;
+}
+
+ .t-card-cont {
+  @extend .card-cont;
+
+   h1, h2, h3, h4 {
+    display: flex;
+    justify-content: space-between;
+    padding: .5rem 1rem;
+  }
+  .t-card-cont-stuff {
+    margin: 1rem;
+  }
+}
+
+ .t-accordion {
+  // display: none;
+  // padding: 1rem;
+  // padding: 0 18px;
+}
+
+ .t-expand .t-accordion {
+  display: block;
+}
+
+ .t-accordion-arrow-d {
+  @extend .btn-icon-header;
+  background-image: url("./images/arrow-thin-white.png");
+  border-radius: 5px;
+}
+
+ .t-accordion-arrow-u {
+  @extend .t-accordion-arrow-d;
+  transform: scaleY(-1);
+  border-radius: 5px;
+}
+
+ .t-link-accordion {
+  @extend .t-card-cont;
+
+   a {
+    -webkit-transition: all .2s ease;
+    -moz-transition: all .2s ease;
+    -o-transition: all .2s ease;
+    background-image: asset-data-url("embed/arrow-thin.png");
+    background-position: 97% center;
+    background-repeat: no-repeat;
+    background-size: 1.1rem;
+    border-bottom: 1px solid #dfdfdf;
+    display: block;
+    padding: .5rem 1rem;
+    transition: all .2s ease;
+  }
+  a:hover { background-color: $paper-white-shade; }
+
+   .t-accordion {
+    padding: 0;
+  }
+}
+
+ .t-checklist {
+  display: flex;
+}
+
+ .t-checklist-sum {
+  border-right: 1px solid $cloud-gray;
+  padding: 1rem;
+  width: 12rem;
+}
+
+ .t-checklist-crit {
+  margin: 0;
+  padding: 1rem;
+}
+
+ .t-checklist-item {
+  align-items: flex-start;
+  display: flex;
+  padding: 0 0 .5rem 0;
+
+   &:last-child {
+    padding: 0;
+  }
+}
+
+ .t-checklist-box {
+  border: 2px solid $red;
+  border-radius: 3px;
+  display: inline-block;
+  margin: 0 1rem 0 0;
+  padding: .4rem;
+}
+
+ .t-checklist-txt {
+  display: inline-block;
+}
+
+ .t-box-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+ .t-box-link {
+  @extend .card;
+  color: $red;
+  display: flex;
+  flex-direction: column;
+  height: 10rem;
+  margin: 0 .5rem 1rem .5rem;
+  transition: all .3s ease;
+  width: 10rem;
+
+   &:hover {
+    color: $red;
+    opacity: 0.8;
+  }
+}
+
+ .t-box-link-txt {
+  padding: .5rem;
+  text-align: center;
+}
+
+ .t-box-link-img {
+  border-bottom: 5px solid $red;
+  flex: 1;
+  overflow: hidden;
+
+   img {
+    width: 100%;
+  }
+}
+
+ .t-col-links {
+  @extend .t-box-links;
+}
+
+ .t-col-link {
+  @extend .t-box-link;
+  height: auto;
+}
+
+ .t-col-link-img {
+  border-bottom: 5px solid $red;
+  height: 5rem;
+  overflow: hidden;
+
+   img {
+    width: 100%;
+  }
+}
+
+ .t-col-link-txt {
+  flex: 1;
+  padding: .5rem;
+}
+
+ .t-red-btn {
+  @extend .btn-red;
+}
+
+ .t-btn-cont {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+
+   .t-red-btn {
+    align-items: center;
+    display: flex;
+    margin: 0 .2rem .5rem .2rem;
+    max-width: 7rem;
+    white-space: pre-line;
+  }
+}
+
+ @media only screen and (max-width: 800px) {
+
+   .t-img-card {
+    display: block;
+    padding: 1rem;
+  }
+
+   .t-img-card-txt {
+    padding: 1rem 0 0 0;
+  }
+
+   .t-checklist {
+    display: block;
+  }
+
+   .t-checklist-sum {
+    border-right: none;
+  }
+
+ }
+
+ @media only screen and (max-width: 600px) {
+
+   .t-expand .t-accordion {
+    display: none;
+  }
+
+   .t-expand .t-accordion-arrow-d {
+    transform: scaleY(-1);
+  }
+
+   .t-expand .t-accordion-arrow-u {
+    transform: scaleY(1);
+  }
+
+ }
+
+
+
+
+ /*accordion stack styling
+*/
+.accordion-stack{
+  width:100%;
+  margin: 0%;
+
+   h2{
+    font-size: 1.2rem;  
+    color: rgb(20, 20 ,20);
+  }
+
+ }
+#accordion-stack-header {
+    background-color: $white;
+    border-bottom: 1px solid $cloud-gray;
+}
+#accordion-stack-button {
+    background-color: $white;
+    background-image: asset-data-url("embed/arrow-thin-up.png");
+}
+#a-s-content{
+  background-color: $white;
+  border-bottom: 1px solid $cloud-gray;
+
+ }
+
+
+ /*table+heading */
+.t-table{
+  @extend .t-card-cont; 
+  border-radius: 4px 4px 1px 1px; 
+  display: table;
+  padding: 0;
+  width: 100%;
+  table-layout: fixed;
+
+   h2{
+    text-align: center;
+    display: block;
+    padding:.5rem auto;
+
+   }
+}
+
+ .table-row{
+  display: table-row;
+      word-wrap: break-word;
+
+   h4 {
+    margin: 0;
+    background-color: #D9D9D9;
+    border: 2px solid $storm-gray;
+    border-width: 0 2px 2px 1px;
+    display: table-cell;
+    text-align: left;
+        word-wrap: break-word;
+
+
+     @media only screen and (max-width: 1048px) {
+      display: table-row;
+    }
+  }
+
+ }
+.t-table-col{
+  border: 2px solid $storm-gray;
+  border-width: 0 1px 2px 0;
+
+   display: table-cell;
+      word-wrap: break-word;
+
+   @media only screen and (max-width: 1048px) {
+      display: table-row;
+  }
+  p {
+    margin-left: 2%;
+    word-wrap: break-word;
+  }
+}
+
+ .t-table-content{
+  display: table;
+  width: 100%;
+}

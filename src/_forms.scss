@@ -1,0 +1,341 @@
+.form-ribbon {
+  margin: 0 -10px !important;
+}
+
+.form-cont {
+  @extend .card;
+  padding: 1.5rem 0;
+}
+
+.form-bottom {
+  display: flex;
+}
+
+#form-box {
+  border-right: 1px solid $cloud-gray;
+  display: inline-block;
+  text-align: left;
+  vertical-align: top;
+  width: 45%;
+
+  form {
+    padding: 1rem;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  textarea {
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    box-shadow: inset 0 0 2px #ccc;
+    box-sizing: border-box;
+    margin: 0 0 .5rem 0;
+    padding: .3rem .5rem;
+    width: 100%;
+  }
+
+  textarea {
+    height: 10rem;
+  }
+
+  input[type="date"] {
+    font-size: 1rem;
+    margin: 1% 0 2.5% 0;
+    padding: 1%;
+  }
+
+  input[type="file"] { font-size: 1rem; cursor: pointer;}
+
+  #page-layout-select {
+    display: block;
+
+    .layout-select-field {
+      margin: 0 8% 0 0;
+      display: block;
+
+      a {
+        display: block;
+      }
+    }
+  }
+}
+
+#form-btn-cont {
+  display: inline-block;
+  float: right;
+  margin: 0 0 0 2rem;
+  position: relative;
+  text-align: right;
+  top: -.5rem;
+}
+
+.btn-form-back {
+  @extend .btn-red;
+  align-items: center;
+  display: flex !important;
+  margin: .2rem;
+}
+
+.form-back-btn {
+  align-items: center;
+  display: flex;
+  font-size: 1rem;
+  margin: 1rem 0 !important;
+  padding: .5rem;
+}
+
+.form-toggle {
+  background: #bcbcbc;
+  border-radius: 2px;
+  color: #444;
+  display: block;
+  font-size: 1rem;
+  margin: 0 0 2% 0;
+  padding: 1% 3%;
+  text-align: center;
+  text-transform: uppercase;
+  width: 94%;
+
+  &:hover { background: $dapple-gray; }
+
+}
+
+#submit-container {
+  text-align: center;
+}
+
+#form-submit-btn {
+  @extend .btn-red;
+  border-radius: 2rem !important;
+  font-size: 1.2rem !important;
+  margin: 1rem !important;
+  padding: .5rem 2rem !important;
+}
+
+#form-sidebar {
+  flex: 1;
+  padding: 1rem;
+
+  .annotation {
+    background: $pale-yellow;
+    display: none;
+    padding: 1rem;
+
+    p { margin: 0; }
+  }
+}
+
+.upload-photo {
+  display: flex;
+  margin: 0 0 1rem 0;
+
+  input {
+    display: block;
+    position: relative;
+    width: auto;
+  }
+
+  .fileupload-file { opacity: 0; }
+}
+
+.fileupload-preview {
+  background-size: cover;
+  width: 50%;
+}
+
+.fileupload-exists,
+.fileupload-new {
+  display: block;
+  position: absolute;
+  bottom: 0;
+}
+
+span.fileupload-new {
+  display: none !important;
+}
+
+.btn-file .fileupload-new {
+  @extend .btn-red;
+  display: block;
+  font-size: 1.1rem !important;
+  margin: 0 !important;
+  padding: .6rem 0 !important;
+  width: 100%;
+}
+
+.btn-label-container,
+.fileupload {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  position: relative;
+}
+
+.fileupload {
+  padding: 0;
+  min-width: 10rem;
+}
+
+.btn-label-container input {
+  height: 2.5rem;
+  width: 100%;
+}
+
+.link-field {
+  display: flex;
+  padding: 0;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.link-field-field {
+  margin: 0;
+  margin-right: 0.5rem;
+  margin-left: 0.5rem;
+  flex: 1;
+}
+
+.link-field-delete {
+  @extend .link-field-field;
+  flex-grow: 0.1;
+  align-self: center;
+}
+
+.nav-section {
+  display: flex;
+  padding: 0;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.nav-section-field {
+  margin: 0;
+  margin-right: 0.5rem;
+  margin-left: 0.5rem;
+  flex: 1;
+}
+
+.nav-section-field-delete {
+  @extend .nav-section-field;
+  flex-grow: 0.1;
+  align-self: center;
+}
+
+.form-toggle-red {
+  @extend .btn-header;
+}
+
+#active-checkbox {
+  display: none;
+}
+
+// //Error Flashes
+// #error-explanation {
+//   @extend .flash;
+//   @extend .error;
+//   width: 100%;
+//   flex-basis: 100%;
+// }
+
+@media only screen and (max-width: 800px) {
+
+#form-box,
+#form-sidebar {
+  display: block;
+  padding: 0;
+  width: auto;
+
+  .annotation {
+    visibility: hidden;
+  }
+}
+
+
+.upload-photo { display: block; }
+
+.fileupload { padding: 0; }
+
+.fileupload-preview {
+  height: 14rem;
+  margin: 0 0 .5rem 0;
+  width: auto;
+}
+
+}
+
+.field {
+  opacity: 1;
+  transition: opacity 0.25s;
+
+  &.faded {
+    pointer-events: none;
+    opacity: 0.5;
+  }
+}
+
+.field-heading {
+  font-size: 1.1em;
+  font-weight: 900;
+}
+
+textarea.schedule-field {
+  background: asset-data-url("embed/redesign-numbers.png") left 0.3rem no-repeat;
+  padding-left: 1.9rem !important;
+  line-height: 1em;
+  width: calc(97%-1.9rem) !important;
+  background-color: #fff;
+}
+
+
+// drive button styling
+.drive-button {
+  background-color: #fff;
+  height: 2rem;
+  cursor: pointer;
+  width: 4rem;
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+  margin: 1rem 0;
+  padding: 0 0 0 2.25rem;
+  line-height: 2rem;
+  display: block;
+  font-family: 'Roboto', helvetica, Arial, sans-serif;
+  background-image: image_url('embed/drive_icon.png');
+  background-repeat: no-repeat;
+  background-position: 5px 50%;
+  background-size: auto 80%;
+  transition: background-color 0.25s, box-shadow 0.25s;
+
+  &:hover, &:active {
+    background-color: #eee;
+    background-image: image_url('embed/drive_icon.png');
+    background-repeat: no-repeat;
+    background-position: 5px 50%;
+    background-size: auto 80%;
+  }
+
+  a {
+    text-decoration: none;
+
+    span {
+      color: #777;
+      text-decoration: none;
+    }
+  }
+}
+
+#new_message {
+  display: inline;
+}
+
+@media only screen and (max-width: 600px) {
+
+  .form-bottom {
+    display: block;
+  }
+
+  #form-box {
+    border-right: none;
+  }
+
+}

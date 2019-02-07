@@ -1,0 +1,242 @@
+.ribbon-1 {
+  background: $navy;
+  color: $white;
+  font-size: 1.3rem;
+  margin: 0 -20px 1rem -20px;
+  padding: .2rem !important;
+  text-align: center;
+}
+
+
+.ribbon-1:before,
+.ribbon-1:after {
+    content: '';
+    position: absolute;
+    border-style: solid;
+    border-color: transparent;
+    top: 3rem;
+}
+
+.ribbon-1:before {
+    border-width: 0 5px 5px 0;
+    border-right-color: $navy-darker;
+    left: -5px;
+}
+
+.ribbon-1:after {
+    border-width: 0 0 5px 5px;
+    border-left-color: $navy-darker;
+    right: -5px;
+}
+
+.ribbon-2 {
+  background: $red;
+  color: $white;
+  display: flex;
+  font-size: 2rem;
+  margin: 0 0 1rem 0;
+  padding: .5rem 1.5rem;
+  position: relative;
+
+  h1,
+  h2 {
+    flex: 1;
+    font-size: inherit;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.ribbon-2:before,
+.ribbon-2:after {
+    content: '';
+    position: absolute;
+    border-style: solid;
+    border-color: transparent;
+    top: 3.5rem;
+}
+
+.ribbon-2:before {
+    border-width: 0 10px 10px 0;
+    border-right-color: $red-darker;
+    left: 0;
+}
+
+.ribbon-2:after {
+    border-width: 0 0 10px 10px;
+    border-left-color: $red-darker;
+    right: 0;
+}
+
+.ribbon-2-tl, .ribbon-2-tr {
+  border-color: $red-dark;
+  border-style: solid;
+  border-width: 1.75rem 1.5rem;
+  position: absolute;
+  z-index: -1;
+}
+
+.ribbon-2-tl {
+  border-left: .5rem solid transparent;
+  left: -1.5rem;
+}
+
+.ribbon-2-tr {
+  border-right: .5rem solid transparent;
+  right: -1.5rem;
+}
+
+.ribbon-2-search {
+  align-self: center;
+  border: 1.5px solid $white;
+  border-radius: 1rem;
+  box-sizing: border-box;
+  box-shadow: inset 0 0 0.7rem #ccc;
+  display: flex;
+  font-size: .9rem;
+  margin: .2rem 0 .2rem 1rem;
+  padding: .2rem 2.5rem .2rem .5rem;
+  transition: all .5s ease;
+}
+
+.toggle-ribbon-search {
+  background: asset-data-url("search-icon.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  display: none;
+  margin: 0 0 0 .5rem;
+  padding: .6rem;
+}
+
+.toggle-ribbon-search.search-x {
+  background: asset-data-url("embed/cross.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.ribbon-3 {
+  background: $red;
+  box-sizing: border-box;
+  color: $white;
+  display: flex;
+  font-size: 1.6rem;
+  margin: 0 3rem .5rem -10px;
+  padding: .5rem 1.5rem; 
+  position: relative;
+
+  span {
+    flex: 1;
+    margin: 0 0 0 2.5rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+
+.ribbon-3:before,
+.ribbon-3:after {
+    content: '';
+    position: absolute;
+    border-style: solid;
+    border-color: transparent;
+}
+
+.ribbon-3:before {
+    border-width: 0 10px 10px 0;
+    border-right-color: $red-darker;
+    left: 0;
+    top: 3rem;
+}
+
+.ribbon-3:after {
+  border-color: $red;
+  border-right-color: transparent;
+  border-style: solid;
+  border-width: 1.55rem 1.5rem;
+  right: -3rem;
+  top: 0;
+}
+
+.ribbon-4 {
+  background: $navy;
+  box-sizing: border-box;
+  color: $white;
+  display: flex;
+  font-size: 1.2rem;
+  margin: 0 3rem 1rem -10px;
+  padding: .3rem 1.5rem;
+  position: relative;
+
+  span {
+    flex: 1;
+    margin: 0 0 0 2.5rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+
+.ribbon-4:before,
+.ribbon-4:after {
+    content: '';
+    position: absolute;
+    border-style: solid;
+    border-color: transparent;
+}
+
+.ribbon-4:before {
+    border-width: 0 10px 10px 0;
+    border-right-color: $navy-darker;
+    left: 0;
+    top: 2.1rem;
+}
+
+.ribbon-4:after {
+  border-color: transparent;
+  border-left-color: $navy;
+  border-style: solid;
+  border-width: 1.1rem 1.5rem;
+  right: -3rem;
+  top: 0;
+}
+
+@media only screen and (max-width: 500px) {
+
+  .ribbon-2-search {
+    margin-left: 0;
+    opacity: 0;
+    width: 0%;
+
+    &.search-show {
+      opacity: 1;
+      width: 100%;
+    }
+  }
+
+  .toggle-ribbon-search {
+    display: block;
+  }
+
+  .ribbon-3 {
+    padding: .5rem 1.5rem;
+
+    span {
+      margin: 0;
+    }
+  }
+
+  .ribbon-4 {
+    padding: .3rem 1.5rem;
+
+    span {
+      margin: 0;
+    }
+  }
+
+}

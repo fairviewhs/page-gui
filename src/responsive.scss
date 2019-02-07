@@ -1,0 +1,84 @@
+// Variables
+$charcoal-gray: #252525;
+$white: #fff;
+$paper-white: #f9f9f9;
+$paper-white-shade: #f2f2f2;
+$cloud-gray: #e5e5e5;
+$dapple-gray: #adadad;
+$storm-gray: #808080;
+$red: #bf2420;
+$red-dark: #ad1d1a;
+$red-darker: #7c100d;
+$red-shade: #aa1e1a;
+$navy: #2c3347;
+$navy-dark: #242a3a;
+$navy-darker: #1b1f2b;
+$blue: #3b549b;
+$blue-shade: #213672;
+$pale-yellow: #fcf8db;
+
+
+// Fonts
+@import url('https://fonts.googleapis.com/css?family=PT+Sans:400,400i,700,700i');
+@import url('https://fonts.googleapis.com/css?family=PT+Serif:400,400i,700,700i');
+
+
+// ------------ Application files ------------
+// @import 'responsive_partials/about';
+// @import 'responsive_partials/activity_pages';
+// @import 'responsive_partials/activity_directory';
+// @import 'responsive_partials/announcements';
+// @import 'responsive_partials/base';
+// @import 'responsive_partials/calendars';
+// @import 'responsive_partials/class_pages';
+// @import 'responsive_partials/classroom';
+// @import 'responsive_partials/dashboard';
+// @import 'responsive_partials/discussions';
+// @import 'responsive_partials/editors';
+// @import 'responsive_partials/elections';
+// @import 'responsive_partials/events';
+// @import 'responsive_partials/files';
+// @import 'responsive_partials/flashcards';
+// @import 'responsive_partials/forms';
+// @import 'responsive_partials/global';
+// @import 'responsive_partials/layout';
+// @import 'responsive_partials/nav_pages';
+// @import 'responsive_partials/questions';
+// @import 'responsive_partials/quizzes';
+// @import 'responsive_partials/ribbons';
+// @import 'responsive_partials/templates';
+// @import 'responsive_partials/search';
+// @import 'responsive_partials/sessions';
+// @import 'responsive_partials/staff_directory';
+// @import 'responsive_partials/staff_pages';
+// @import 'responsive_partials/static_pages';
+// @import 'responsive_partials/student_directory';
+// @import 'responsive_partials/subscriptions';
+// @import 'responsive_partials/templates';
+// @import 'jquery-ui.min';
+// @import 'partials/tipsy';
+// @import 'fullcalendar';
+// @import 'fullcalendar.print' print;
+
+#shall-we-play-a-game {
+  text-decoration: none;
+  opacity: 0;
+  cursor: pointer;
+  transition: opacity .5s;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+#game {
+  box-shadow: 0 2px 15px 0 #000;
+  position: relative;
+  width: 400px;
+  height: 300px;
+  background: #333;
+  top: -484px;
+  left: -410px;
+  border: 5px solid #fff;
+  display: none;
+}
