@@ -17,21 +17,9 @@ import FormCreator, { ComponentStructure, GeneratedComponent, ComponentValues, B
 import TitleCard from './Templates/TitleCard';
 import AccordionCard from './Templates/AccordionCard';
 import TempCheckList from './Templates/TempCheckList';
-import filenamify from 'filenamify';
 
 import { renderToString } from 'react-dom/server';
 import CompileComponents from './FormCreator/CompileComponents';
-
-// const { app } = require('electron');
-const { app } = (window as any).require('electron').remote.require('electron');
-console.log(app.getPath('userData'))
-const fs = (window as any).require('fs');
-const { promisify } = (window as any).require('util');
-const path = (window as any).require('path');
-
-const writeFile = promisify(fs.writeFile);
-const existsSync = fs.existsSync;
-const mkdir = promisify(fs.mkdir);
 
 const generateDefaultValue = (type: BaseProperty) => {
   if (typeof type === 'object' || type === 'component') {
@@ -153,48 +141,14 @@ const mapping: ComponentStructure[] = [
 
 type AppState = { 
   componentList: GeneratedComponent[];
-  pageName: string;
   htmlOutput: string;
 };
 
 class App extends Component<{}, AppState> {
 
-  // save = (details: object) => {
-  //   writeFile(path.join(app.getPath('userData'), 'test.json'), JSON.stringify(details));
-  // }
-
   state: AppState = {
     componentList: [],
-    pageName: '',
     htmlOutput: ''
-  }
-
-  // PAGE LOGIC
-
-  toStringComponents = (): string => {
-    return JSON.stringify(this.state.componentList);
-  }
-
-  changePage = (event: ChangeEvent<HTMLInputElement>) => {
-    this.setState({ pageName: event.target.value });
-  }
-
-  handleSave = async () => {
-    if (this.state.pageName === '') {
-      // TODO: change error
-    }
-    const basePath = path.join(app.getPath('userData'), 'pages');
-    if (!existsSync(basePath)) {
-      await mkdir(basePath);
-    }
-
-    const filename = `${filenamify(this.state.pageName.toLowerCase())}.json`;
-    const contents = {
-      pageName: this.state.pageName,
-      data: this.toStringComponents()
-    }
-  
-    writeFile(path.join(basePath, filename), JSON.stringify(contents));
   }
 
   // HTML LOGIC
@@ -273,9 +227,6 @@ class App extends Component<{}, AppState> {
           />
 
           <CompileComponents componentList={this.state.componentList} componentTypes={mapping} />
-
-          <input type="text" value={this.state.pageName} onChange={this.changePage} />
-          <button onClick={this.handleSave}>Save Page</button>
 
           <button onClick={this.generateHtml}>Generate HTML</button>
           {htmlOut}

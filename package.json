@@ -1,17 +1,13 @@
 {
   "name": "fhs-gui-creator",
   "version": "0.1.0",
-  "main": "public/electron.js",
   "homepage": "./",
   "private": true,
   "dependencies": {
-    "@types/electron": "^1.6.10",
     "@types/jest": "^24.0.0",
     "@types/node": "^10.12.21",
     "@types/react": "^16.8.2",
     "@types/react-dom": "^16.8.0",
-    "electron-is-dev": "^1.0.1",
-    "filenamify": "^2.1.0",
     "node-sass": "^4.11.0",
     "react": "^16.8.1",
     "react-dom": "^16.8.1",
@@ -20,12 +16,10 @@
     "typescript": "^3.3.1"
   },
   "scripts": {
-    "react-start": "react-scripts start",
-    "start": "concurrently \"BROWSER=none npm run react-start\" \"wait-on http://localhost:3000 && electron .\"",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "electron-pack": "build"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -36,20 +30,5 @@
     "not ie <= 11",
     "not op_mini all"
   ],
-  "devDependencies": {
-    "@types/filenamify": "^2.0.1",
-    "concurrently": "^4.1.0",
-    "electron": "^4.0.4",
-    "electron-builder": "^20.38.5",
-    "wait-on": "^3.2.0"
-  },
-  "build": {
-    "appId": "fhs-gui-creator",
-    "files": [
-      "build/**/*"
-    ],
-    "directories": {
-      "buildResources": "assets"
-    }
-  }
+  "devDependencies": {}
 }
