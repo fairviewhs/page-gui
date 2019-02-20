@@ -1,48 +1,5 @@
-// import React, { Component, Fragment, ChangeEvent } from 'react';
-// import ArrayInput from './FormInputTypes/ArrayInput';
-
-// export type FormInputProps = ComponentMapping & {
-//   values: {
-//     [propertyName: string]: boolean | string
-//   },
-//   onPropertyChange: (propertyName: string, value: any) => any;
-// }
-
-// export default class FormInput extends Component<FormInputProps, any> {
-
-//   handleChange = (propertyName: string) => (event: ChangeEvent<HTMLInputElement> | any) => {
-//     console.log(event.target.value);
-//     this.props.onPropertyChange(propertyName, event.target.value);
-//   }
-
-//   public render() {
-//     // TODO: component is not required!
-//     const { name, component: Component, properties, values } = this.props;
-
-//     const inputs = Object.entries(properties).map(([property, type]) => {
-//       if (Array.isArray(type)) {
-//         return <ArrayInput values={[]} onChange={() => {}} properties={type} />
-//       }
-//       return (
-//         <Fragment>
-//           <label>{property}</label>
-//           <textarea onChange={this.handleChange(property)} value={values[property] as string} />
-//         </Fragment>
-//       );
-//     });
-
-//     return (
-//       <div>
-//         <h1>{name}</h1>
-//         {inputs}
-//       </div>
-//     );
-//   }
-// }
-
-
 import React, { Component, ChangeEvent, Fragment } from 'react';
-import { ComponentValues, ComponentProperties, BaseProperty } from './FormCreator';
+import FormCreator, { ComponentValues, ComponentProperties, BaseProperty, ComponentStructure, GeneratedComponent } from './FormCreator';
 
 export interface FormInputProps {
   propertyTypes: ComponentProperties;
@@ -63,19 +20,64 @@ export default class FormInput extends Component<FormInputProps, any> {
     }
   }
 
+  handleComponentAdd = (property: string) => (index: number, component: GeneratedComponent) => {
+    const componentList = this.props.componentValues[property] as GeneratedComponent[]; // TODO: type check
+    const newValue = [
+      ...componentList,
+      component // TODO: handle index
+    ]
+    this.props.onPropertyChange(property, newValue);
+  }
+  handleComponentChange = (property: string) => (index: number, values: ComponentValues) => {
+    const componentList = this.props.componentValues[property] as GeneratedComponent[]; // TODO: type check
+    const newValue = componentList.map((component, indx) => indx === index ? { ...component, values } : component);
+    this.props.onPropertyChange(property, newValue);
+  }
+  handleComponentRemove = (property: string) => (index: number) => {
+    const componentList = this.props.componentValues[property] as GeneratedComponent[]; // TODO: type check
+    const newValue = componentList.filter((_, indx) => indx !== index);
+    this.props.onPropertyChange(property, newValue);
+  }
+
   public render() {
     const { propertyTypes, componentValues } = this.props;
 
     const inputs = Object.entries(propertyTypes)
       .map(([property, type]) => {
-        const value = componentValues[property] as string;
+        const value = componentValues[property];
         let input;
         if (Array.isArray(type)) {
           return null;
+        } else if (type === 'component') {
+          input = (
+            <FormCreator
+              componentTypes={this.props.componentTypes}
+              onAdd={this.handleComponentAdd(property)}
+              onChange={this.handleComponentChange(property)}
+              onRemove={this.handleComponentRemove(property)}
+              componentList={value as GeneratedComponent[]} // TODO: type check
+              generateDefaultValue={this.props.generateDefaultValue}
+            />
+          );
+        } else if (typeof type === 'object') {
+          const { allowed = [], custom = [] } = type;
+          let validTypes: ComponentStructure[] = [];
+          validTypes = this.props.componentTypes.filter(componentType => allowed.includes(componentType.name));
+          validTypes = [...validTypes, ...custom];
+          input = (
+            <FormCreator
+              componentTypes={validTypes}
+              onAdd={this.handleComponentAdd(property)}
+              onChange={this.handleComponentChange(property)}
+              onRemove={this.handleComponentRemove(property)}
+              componentList={value as GeneratedComponent[]} // TODO: type check
+              generateDefaultValue={this.props.generateDefaultValue}
+            />
+          );
         } else if (type === 'boolean') {
-          input = <input type="checkbox" value={value} onChange={this.handleChange(property, type)} />;
+          input = <input type="checkbox" value={value as string} onChange={this.handleChange(property, type)} />;// TODO: type check
         } else {
-          input = <input type="text" value={value} onChange={this.handleChange(property, type)} />
+          input = <input type="text" value={value as string} onChange={this.handleChange(property, type)} />;// TODO: type check
         }
         return (
           <Fragment>

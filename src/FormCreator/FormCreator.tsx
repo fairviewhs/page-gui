@@ -1,28 +1,30 @@
-import React, { Component, FormEvent, Fragment, ComponentType } from 'react';
+import React, { Component, Fragment, ComponentType } from 'react';
 import AddNewInput from './AddNewInput';
 import FormInput from './FormInput';
-// import FormInput, { FormInputProps } from './FormInput';
-// import { renderToString } from 'react-dom/server';
 
 // Types
-export type BaseProperty = 'string' | 'boolean';
+export type ComponentProperty = {
+  allowed?: string[];
+  custom?: ComponentStructure[];
+}
+export type BaseProperty = 'string' | 'boolean' | 'component' | ComponentProperty;
 export type ArrayProperty = BaseProperty[];
 export type ComponentProperties = {
-  [propertyName: string]: BaseProperty | ArrayProperty;
+  [propertyName: string]: BaseProperty// | ArrayProperty;
 };
-
-// Values
-export type BaseValue = string | boolean;
-export type ArrayValue = BaseValue[];
-export type ComponentValues = {
-  [propertyName: string]: BaseValue | ArrayValue;
-}
 
 export type ComponentStructure = {
   component: ComponentType<any>;
   name: string;
   propertyTypes: ComponentProperties;
-  defaultValues: ComponentValues;
+  defaultValues?: ComponentValues;
+}
+
+// Values
+export type BaseValue = string | boolean;
+export type ArrayValue = BaseValue[];
+export type ComponentValues = {
+  [propertyName: string]: BaseValue | ArrayValue | GeneratedComponent[];
 }
 
 export type GeneratedComponent = {
@@ -40,7 +42,7 @@ export interface FormCreatorProps {
 }
 
 export default class FormCreator extends Component<FormCreatorProps, any> {
-  
+
   // generateDefaultValues = (structure: ComponentStructure): ComponentValues => {
   //   if (!structure.defaultValues) {
   //     const { propertyTypes } = structure;
@@ -62,29 +64,30 @@ export default class FormCreator extends Component<FormCreatorProps, any> {
   //   }
   //   return structure.defaultValues;
   // }
-  generateDefaultValues = (structure: ComponentStructure): ComponentValues => {
-    return Object.entries(structure.propertyTypes).reduce((prevDefaults, [propertyName, type]) => {
+  generateDefaultValues = async (structure: ComponentStructure): Promise<ComponentValues> => {
+    return await Object.entries(structure.propertyTypes).reduce(async (prevDefaults, [propertyName, type]) => {
       let defaultValue;
       if (structure.defaultValues && structure.defaultValues[propertyName] !== undefined) {
         defaultValue = structure.defaultValues[propertyName];
       } else {
-        defaultValue = this.props.generateDefaultValue(type);
+        defaultValue = await Promise.resolve(this.props.generateDefaultValue(type));
       }
       return {
-        ...prevDefaults,
+        ...(await prevDefaults),
         [propertyName]: defaultValue
       }
-    }, {});
+    }, Promise.resolve({}));
   }
 
-  handleAdd = (index: number) => (componentName: string) => {
+  handleAdd = (index: number) => async (componentName: string) => {
     const structure = this.props.componentTypes.find(structure => structure.name === componentName);
     if (!structure) {
       throw new Error(`Component ${componentName} was not found!`);
     }
+    const defaultValues = await this.generateDefaultValues(structure);
     const newComponent: GeneratedComponent = {
       name: componentName,
-      values: structure.defaultValues
+      values: defaultValues
     }
     this.props.onAdd(index, newComponent);
   }
@@ -99,14 +102,6 @@ export default class FormCreator extends Component<FormCreatorProps, any> {
     };
     this.props.onChange(index, newValues);
   }
-  
-  // handleSave = () => {
-  //   this.props.onSave(this.state.inputs);
-  // }
-
-  // genHtml = (inputs: any) => () => {
-  //   console.log(renderToString(<Fragment>{inputs}</Fragment>))
-  // }
 
   getStructure = (componentName: string): ComponentStructure => {
     const structure = this.props.componentTypes.find(info => info.name === componentName);
@@ -120,18 +115,11 @@ export default class FormCreator extends Component<FormCreatorProps, any> {
 
     // TODO: NEW LINE for textarea https://stackoverflow.com/questions/36260013/react-display-line-breaks-from-saved-textarea
 
-    const renderedComponents = this.props.componentList.map(info => {
-      const componentInfo = this.props.componentTypes.find(structure => structure.name === info.name);
-      if (!componentInfo) {
-        throw new Error(`Component ${info.name} was not found!`);
-      }
-      return <componentInfo.component {...info.values}/>
-    });
-
     const inputs = this.props.componentList.map((info, index) => (
       <Fragment>
         <h1>{info.name}</h1>
         <FormInput
+          componentTypes={this.props.componentTypes}
           propertyTypes={this.getStructure(info.name).propertyTypes}
           componentValues={info.values}
           onPropertyChange={this.handleChange(index)}
@@ -140,36 +128,12 @@ export default class FormCreator extends Component<FormCreatorProps, any> {
       </Fragment>
     ))
 
-    // const componentInfo = this.props.mapping.map(info => {
-    //   return {
-    //     component: info.component,
-    //     name: info.name
-    //   }
-    // });
-
-    // const inputsInfo = this.state.inputs.map((mapping, index) => (
-    //   <>
-    //     <FormInput {...mapping} onPropertyChange={this.changePropertyValue(index)} />
-    //     {Object.entries(mapping.values).map(([p, v]) => (
-    //       <p>{p} {v}</p>
-    //     ))}
-    //   </>
-    // ));
-
-    // const inputs = this.state.inputs.map(mapping => (
-    //   <mapping.component {...mapping.values} />
-    // ));
-
     return (
       <div>
         <div>
-          {/* {inputsInfo} */}
           <AddNewInput componentTypes={this.props.componentTypes} onNewComponent={this.handleAdd(this.props.componentList.length + 1)} />
-          {/* <button onClick={this.handleSave}>Save Info</button> */}
-          {/* <button onClick={this.genHtml(inputs)}>Generate HTML</button> */}
           {inputs}
         </div>
-        {renderedComponents}
       </div>
     );
   }

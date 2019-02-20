@@ -13,13 +13,14 @@ import SectionSubBanner from './Templates/SectionCard/SectionSubBanner';
 import SectionCard from './Templates/SectionCard/SectionCard';
 import Card from './Templates/Card';
 import ImageCard from './Templates/ImageCard';
-import FormCreator, { ComponentStructure, GeneratedComponent, ComponentValues } from './FormCreator/FormCreator';
+import FormCreator, { ComponentStructure, GeneratedComponent, ComponentValues, BaseProperty } from './FormCreator/FormCreator';
 import TitleCard from './Templates/TitleCard';
 import AccordionCard from './Templates/AccordionCard';
 import TempCheckList from './Templates/TempCheckList';
 import filenamify from 'filenamify';
 
 import { renderToString } from 'react-dom/server';
+import CompileComponents from './FormCreator/CompileComponents';
 
 // const { app } = require('electron');
 const { app } = (window as any).require('electron').remote.require('electron');
@@ -96,23 +97,59 @@ const mapping: ComponentStructure[] = [
     propertyTypes: {
       title: 'string',
       children: 'string'
-    },
-    defaultValues: {
-      title: '',
-      children: ''
+    }
+  },
+  // {
+  //   component: TempCheckList,
+  //   name: 'Check List',
+  //   propertyTypes: {
+  //     checkboxItems: ['string']
+  //   },
+  //   defaultValues: {
+  //     checkboxItems: []
+  //   }
+  // },
+  {
+    component: AccordionCard,
+    name: 'TEST ACCORDION CARD',
+    propertyTypes: {
+      title: 'string',
+      children: 'component'
     }
   },
   {
-    component: TempCheckList,
-    name: 'Check List',
+    component: SectionCard,
+    name: 'Section',
     propertyTypes: {
-      checkboxItems: ['string']
-    },
-    defaultValues: {
-      checkboxItems: []
+      title: 'string',
+      children: {
+        custom: [
+          {
+            component: SectionMainBanner,
+            name: 'Main Banner',
+            propertyTypes: {
+              children: 'string'
+            }
+          },
+          {
+            component: Section,
+            name: 'Body',
+            propertyTypes: {
+              children: 'string'
+            }
+          },
+          {
+            component: SectionSubBanner,
+            name: 'Section Sub Banner',
+            propertyTypes: {
+              children: 'string',
+            }
+          }
+        ]
+      }
     }
-  }
-]
+  },
+];
 
 type AppState = { 
   componentList: GeneratedComponent[];
@@ -234,6 +271,8 @@ class App extends Component<{}, AppState> {
             onChange={this.handleChange}
             generateDefaultValue={generateDefaultValue}
           />
+
+          <CompileComponents componentList={this.state.componentList} componentTypes={mapping} />
 
           <input type="text" value={this.state.pageName} onChange={this.changePage} />
           <button onClick={this.handleSave}>Save Page</button>

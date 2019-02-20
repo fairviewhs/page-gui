@@ -23,24 +23,31 @@ export default class AccordionCard extends Component<AccordionCardProps, any> {
     }
   }
 
-  // resize = () => {
+  resize = () => {
+    if (!this.panel.current){
+      throw new Error('Can not toggle accordion. Panel does not exists');
+    }
+    console.log('resize');
+    console.log(this.panel.current.scrollHeight)
+    if (this.state.maxHeight !== '0') {
+      this.setState({ maxHeight: `${this.panel.current.scrollHeight}px` });
+    }
+  }
 
-  // }
+  componentDidMount() {
+    // TODO: refacotr out current handling DRY
+    if (!this.panel.current){
+      throw new Error('Can not toggle accordion. Panel does not exists');
+    }
+    this.panel.current.addEventListener('resize', this.resize);
+  }
 
-  // componentDidMount() {
-  //   // TODO: refacotr out current handling DRY
-  //   if (!this.panel.current){
-  //     throw new Error('Can not toggle accordion. Panel does not exists');
-  //   }
-  //   this.panel.current.addEventListener('onresize', this.resize);
-  // }
-
-  // componentWillUnmount() {
-  //   if (!this.panel.current){
-  //     throw new Error('Can not toggle accordion. Panel does not exists');
-  //   }
-  //   this.panel.current.removeEventListener('onresize', this.resize);
-  // }
+  componentWillUnmount() {
+    if (!this.panel.current){
+      throw new Error('Can not toggle accordion. Panel does not exists');
+    }
+    this.panel.current.removeEventListener('resize', this.resize);
+  }
 
   public render() {
     const { title, children } = this.props;
