@@ -33,6 +33,7 @@ export type GeneratedComponent = {
 export interface FormCreatorProps {
   componentTypes: ComponentStructure[];
   componentList: GeneratedComponent[];
+  generateDefaultValue: (baseType: BaseProperty) => any;
   onAdd: (index: number, generatedComponent: GeneratedComponent) => any;
   onRemove: (index: number) => any;
   onChange: (index: number, values: ComponentValues) => any;
@@ -40,9 +41,41 @@ export interface FormCreatorProps {
 
 export default class FormCreator extends Component<FormCreatorProps, any> {
   
-  // handleSubmit = (event: FormEvent) => {
-  //   event.preventDefault();
+  // generateDefaultValues = (structure: ComponentStructure): ComponentValues => {
+  //   if (!structure.defaultValues) {
+  //     const { propertyTypes } = structure;
+  //     return Object.entries(propertyTypes).reduce((prevDefaults, [propertyName, type]) => {
+  //       let defaultValue;
+  //       if (typeof type === 'object' || type === 'component') {
+  //         defaultValue = [];
+  //       } else if (type === 'string') {
+  //         defaultValue = '';
+  //       } else if (type === 'boolean') {
+  //         return false
+  //       }
+
+  //       return {
+  //         ...prevDefaults,
+  //         [propertyName]: defaultValue
+  //       }
+  //     }, {});
+  //   }
+  //   return structure.defaultValues;
   // }
+  generateDefaultValues = (structure: ComponentStructure): ComponentValues => {
+    return Object.entries(structure.propertyTypes).reduce((prevDefaults, [propertyName, type]) => {
+      let defaultValue;
+      if (structure.defaultValues && structure.defaultValues[propertyName] !== undefined) {
+        defaultValue = structure.defaultValues[propertyName];
+      } else {
+        defaultValue = this.props.generateDefaultValue(type);
+      }
+      return {
+        ...prevDefaults,
+        [propertyName]: defaultValue
+      }
+    }, {});
+  }
 
   handleAdd = (index: number) => (componentName: string) => {
     const structure = this.props.componentTypes.find(structure => structure.name === componentName);
@@ -102,6 +135,7 @@ export default class FormCreator extends Component<FormCreatorProps, any> {
           propertyTypes={this.getStructure(info.name).propertyTypes}
           componentValues={info.values}
           onPropertyChange={this.handleChange(index)}
+          generateDefaultValue={this.props.generateDefaultValue}
         />
       </Fragment>
     ))

@@ -32,15 +32,23 @@ const writeFile = promisify(fs.writeFile);
 const existsSync = fs.existsSync;
 const mkdir = promisify(fs.mkdir);
 
+const generateDefaultValue = (type: BaseProperty) => {
+  if (typeof type === 'object' || type === 'component') {
+    return [];
+  } else if (type === 'boolean') {
+    return false;
+  } else {
+    return '';
+  }
+}
+
+
 const mapping: ComponentStructure[] = [
   {
     component: Ribbon,
     name: 'Ribbon',
     propertyTypes: {
       children: 'string'
-    },
-    defaultValues: {
-      children: ''
     }
   },
   {
@@ -49,10 +57,6 @@ const mapping: ComponentStructure[] = [
     propertyTypes: {
       title: 'string',
       children: 'string'
-    },
-    defaultValues: {
-      title: '',
-      children: ''
     }
   },
   {
@@ -61,10 +65,6 @@ const mapping: ComponentStructure[] = [
     propertyTypes: {
       title: 'string',
       children: 'string'
-    },
-    defaultValues: {
-      title: '',
-      children: ''
     }
   },
   {
@@ -72,9 +72,6 @@ const mapping: ComponentStructure[] = [
     name: 'Basic Card',
     propertyTypes: {
       children: 'string'
-    },
-    defaultValues: {
-      children: ''
     }
   },
   {
@@ -83,10 +80,6 @@ const mapping: ComponentStructure[] = [
     propertyTypes: {
       url: 'string',
       children: 'string'
-    },
-    defaultValues: {
-      url: '',
-      children: ''
     }
   },
   {
@@ -95,10 +88,6 @@ const mapping: ComponentStructure[] = [
     propertyTypes: {
       title: 'string',
       children: 'string'
-    },
-    defaultValues: {
-      title: '',
-      children: ''
     }
   },
   {
@@ -243,6 +232,7 @@ class App extends Component<{}, AppState> {
             onAdd={this.handleAdd}
             onRemove={this.handleRemove}
             onChange={this.handleChange}
+            generateDefaultValue={generateDefaultValue}
           />
 
           <input type="text" value={this.state.pageName} onChange={this.changePage} />

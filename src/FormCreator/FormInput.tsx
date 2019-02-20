@@ -48,6 +48,8 @@ export interface FormInputProps {
   propertyTypes: ComponentProperties;
   componentValues: ComponentValues;
   onPropertyChange: (propertyName: string, value: any) => any;
+  generateDefaultValue: (baseType: BaseProperty) => any;
+  componentTypes: ComponentStructure[];
 }
 
 export default class FormInput extends Component<FormInputProps, any> {
