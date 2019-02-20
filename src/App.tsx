@@ -230,55 +230,6 @@ class App extends Component<{}, AppState> {
 
           <button onClick={this.generateHtml}>Generate HTML</button>
           {htmlOut}
-
-          {/* <Ribbon>Title</Ribbon>
-
-          <RibbonCard title="Ribbon Card With Top">
-            Hello World
-          </RibbonCard>
-
-          <RibbonCard title="Ribbon Card With No Top" noTop>
-            Hello World
-          </RibbonCard>
-
-          <SmallRibbonCard title="Small Ribbon Card">
-            Hello World
-          </SmallRibbonCard>
-
-          <SectionCard>
-            <SectionMainBanner>Hello World</SectionMainBanner>
-            <Section>
-              This is the body of the hello world.
-            </Section>
-            <SectionSubBanner>Contacts</SectionSubBanner>
-            <Section>
-              Who to call?
-              Duh.
-              The ghost busters
-            </Section>
-            <SectionSubBanner>Info</SectionSubBanner>
-            <Section>
-              Crime Fighting Group!
-            </Section>
-          </SectionCard>
-
-          <Card>
-            This is a card. You can fill it with content. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-          </Card>
-
-          <ImageCard url="https://www.fairviewhs.org/system/photos/6606/original/PSAT_logo.png?1460660946">
-            This is a card. You can fill it with content. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-          </ImageCard>
-
-          <TitleCard title="dfasdfasddfasdfasd">
-            asdfasdfasdfasdfasdfasjdklasdfjjkl
-            jkladfalksd
-          </TitleCard>
-
-          <AccordionCard title="Title For Acod">
-            asdfasdfasdfasdfasdfasjdklasdfjjkl
-          </AccordionCard>
-            */}
             
           <div className="t-card-cont">
             <h2>
