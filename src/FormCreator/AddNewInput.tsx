@@ -13,7 +13,7 @@ export interface AddNewInputState {
 export default class AddNewInput extends Component<AddNewInputProps, AddNewInputState> {
 
   state = {
-    selected: ''
+    selected: this.props.componentTypes.length > 0 ? this.props.componentTypes[0].name : ''
   }
 
   handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
@@ -33,9 +33,8 @@ export default class AddNewInput extends Component<AddNewInputProps, AddNewInput
     const options = this.props.componentTypes.map(info => (
       <option key={info.name} value={info.name}>{info.name}</option>
     ));
-    console.log(options)
     return (
-      <form onSubmit={this.handleSubmit}>
+      <form onSubmit={this.handleSubmit} defaultValue={this.props.componentTypes[0].name}>
         <select value={this.state.selected} onChange={this.handleChange}>
           {options}
         </select>
