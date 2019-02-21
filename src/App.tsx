@@ -4,6 +4,9 @@ import './_global.scss';
 import './_templates.scss';
 import './responsive.scss';
 
+import FormCreator, { ComponentStructure, GeneratedComponent, ComponentValues, BaseProperty } from './FormCreator/FormCreator';
+import CompileComponents from './FormCreator/CompileComponents';
+
 import Ribbon from './Templates/Ribbon';
 import RibbonCard from './Templates/RibbonCard';
 import SmallRibbonCard from './Templates/SmallRibbonCard';
@@ -13,13 +16,14 @@ import SectionSubBanner from './Templates/SectionCard/SectionSubBanner';
 import SectionCard from './Templates/SectionCard/SectionCard';
 import Card from './Templates/Card';
 import ImageCard from './Templates/ImageCard';
-import FormCreator, { ComponentStructure, GeneratedComponent, ComponentValues, BaseProperty } from './FormCreator/FormCreator';
 import TitleCard from './Templates/TitleCard';
 import AccordionCard from './Templates/AccordionCard';
-import TempCheckList from './Templates/TempCheckList';
+import CheckListSummary from './Templates/CheckList/CheckListSummary';
+import CheckListCriteria from './Templates/CheckList/CheckListCriteria';
+import CheckListItem from './Templates/CheckList/CheckListItem';
+import CheckList from './Templates/CheckList/CheckList';
 
 import { renderToString } from 'react-dom/server';
-import CompileComponents from './FormCreator/CompileComponents';
 
 const generateDefaultValue = (type: BaseProperty) => {
   if (typeof type === 'object' || type === 'component') {
@@ -60,7 +64,9 @@ const mapping: ComponentStructure[] = [
     component: Card,
     name: 'Basic Card',
     propertyTypes: {
-      children: 'string'
+      children: {
+        allowed: ['Check List']
+      }
     }
   },
   {
@@ -87,14 +93,61 @@ const mapping: ComponentStructure[] = [
       children: 'string'
     }
   },
+  {
+    component: CheckList,
+    name: 'Check List',
+    propertyTypes: {
+      children: {
+        custom: [
+          {
+            component: CheckListSummary,
+            name: 'Check List Summary',
+            propertyTypes: {
+              children: 'string'
+            }
+          },
+          {
+            component: CheckListCriteria,
+            name: 'Check List Criteria',
+            propertyTypes: {
+              children: {
+                custom: [
+                  {
+                    component: CheckListItem,
+                    name: 'Check List Item',
+                    propertyTypes: {
+                      children: 'string'
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
   // {
-  //   component: TempCheckList,
-  //   name: 'Check List',
+  //   component: CheckListSummary,
+  //   name: 'Check List Summary',
   //   propertyTypes: {
-  //     checkboxItems: ['string']
-  //   },
-  //   defaultValues: {
-  //     checkboxItems: []
+  //     children: 'string'
+  //   }
+  // },
+  // {
+  //   component: CheckListCriteria,
+  //   name: 'Check List Criteria',
+  //   propertyTypes: {
+  //     children: {
+  //       allowed: ['Check List Item']
+  //     }
+  //   }
+  // },
+  // {
+  //   component: CheckListItem, TODO: this element does not show up in a card with a check list summary - the componentTypes is lacking the check list item because it does not look down the tree
+  //   name: 'Check List Item',
+  //   propertyTypes: {
+  //     children: 'string'
   //   }
   // },
   {
