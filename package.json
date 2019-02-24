@@ -2,6 +2,7 @@
   "name": "fhs-gui-creator",
   "version": "0.1.0",
   "homepage": "./",
+  "license": "MIT",
   "private": true,
   "dependencies": {
     "@types/jest": "^24.0.0",
