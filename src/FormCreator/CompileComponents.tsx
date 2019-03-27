@@ -30,7 +30,7 @@ export default class CompileComponents extends Component<CompileComponentsProps>
           }
           return {
             ...prevOptions,
-            [property]: <CompileComponents componentList={value as GeneratedComponent[]} componentTypes={validTypes} /> // TODO: type check
+            [property]: <CompileComponents key={property} componentList={value as GeneratedComponent[]} componentTypes={validTypes} /> // TODO: type check
           }
         }
         return {
@@ -38,7 +38,7 @@ export default class CompileComponents extends Component<CompileComponentsProps>
           [property]: value
         }
       }, {})
-      return <componentInfo.component {...values}/>
+      return <componentInfo.component key={info.id} {...values}/>
     });
 
     return compiledComponents;

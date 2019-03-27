@@ -2,6 +2,9 @@ import React, { Component, Fragment, ComponentType } from 'react';
 import AddNewInput from './AddNewInput';
 import FormInput from './FormInput';
 
+import uuid from 'uuid/v4';
+import { ComponentId } from '../App';
+
 // Types
 export type ComponentProperty = {
   allowed?: string[];
@@ -87,6 +90,7 @@ export default class FormCreator extends Component<FormCreatorProps, any> {
     const defaultValues = await this.generateDefaultValues(structure);
     const newComponent: GeneratedComponent = {
       name: componentName,
+      id: uuid(),
       values: defaultValues
     }
     this.props.onAdd(index, newComponent);
@@ -116,7 +120,7 @@ export default class FormCreator extends Component<FormCreatorProps, any> {
     // TODO: NEW LINE for textarea https://stackoverflow.com/questions/36260013/react-display-line-breaks-from-saved-textarea
 
     const inputs = this.props.componentList.map((info, index) => (
-      <Fragment>
+      <Fragment key={info.id}>
         <h1>{info.name}</h1>
         <FormInput
           componentTypes={this.props.componentTypes}

@@ -192,8 +192,11 @@ const mapping: ComponentStructure[] = [
   },
 ];
 
+export type ComponentId = string;
+
 type AppState = { 
   componentList: GeneratedComponent[];
+  selectedId: ComponentId;
   htmlOutput: string;
 };
 
@@ -201,6 +204,7 @@ class App extends Component<{}, AppState> {
 
   state: AppState = {
     componentList: [],
+    selectedId: '',
     htmlOutput: ''
   }
 
