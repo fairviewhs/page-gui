@@ -9,12 +9,14 @@
     "@types/node": "^10.12.21",
     "@types/react": "^16.8.2",
     "@types/react-dom": "^16.8.0",
+    "lodash": "^4.17.11",
     "node-sass": "^4.11.0",
     "react": "^16.8.1",
     "react-dom": "^16.8.1",
     "react-scripts": "^2.1.3",
     "react-spring": "^8.0.2",
-    "typescript": "^3.3.1"
+    "typescript": "^3.3.1",
+    "uuid": "^3.3.2"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -31,5 +33,8 @@
     "not ie <= 11",
     "not op_mini all"
   ],
-  "devDependencies": {}
+  "devDependencies": {
+    "@types/lodash": "^4.14.123",
+    "@types/uuid": "^3.4.4"
+  }
 }
