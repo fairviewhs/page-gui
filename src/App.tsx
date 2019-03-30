@@ -25,184 +25,20 @@ import CheckList from './Templates/CheckList/CheckList';
 
 import { renderToString } from 'react-dom/server';
 
-import { BaseProperty, ComponentStructure, BaseComponent, GeneratedComponent, ComponentId, ComponentValues, isGeneratedComponentArray } from './types';
+import { ComponentStructure, BaseComponent, GeneratedComponent, ComponentId, ComponentValues, isGeneratedComponentArray } from './types';
 
-const generateDefaultValue = (type: BaseProperty) => {
-  if (typeof type === 'object' || type === 'component') {
-    return [];
-  } else if (type === 'boolean') {
-    return false;
-  } else {
-    return '';
-  }
+export type AppProps = {
+  baseComponents: BaseComponent<any>[];
+  componentStructures: ComponentStructure[];
 }
 
-
-const mapping: ComponentStructure[] = [
-  {
-    component: Ribbon,
-    name: 'Ribbon',
-    propertyTypes: {
-      children: 'string'
-    }
-  },
-  {
-    component: RibbonCard,
-    name: 'Ribbon Card',
-    propertyTypes: {
-      title: 'string',
-      children: 'string'
-    }
-  },
-  {
-    component: SmallRibbonCard,
-    name: 'Small Ribbon Card',
-    propertyTypes: {
-      title: 'string',
-      children: 'string'
-    }
-  },
-  {
-    component: Card,
-    name: 'Basic Card',
-    propertyTypes: {
-      children: {
-        allowed: ['Check List']
-      }
-    }
-  },
-  {
-    component: ImageCard,
-    name: 'Image Card',
-    propertyTypes: {
-      url: 'string',
-      children: 'string'
-    }
-  },
-  {
-    component: TitleCard,
-    name: 'Title Card',
-    propertyTypes: {
-      title: 'string',
-      children: 'string'
-    }
-  },
-  {
-    component: AccordionCard,
-    name: 'Accordion Card',
-    propertyTypes: {
-      title: 'string',
-      children: 'string'
-    }
-  },
-  {
-    component: CheckList,
-    name: 'Check List',
-    propertyTypes: {
-      children: {
-        custom: [
-          {
-            component: CheckListSummary,
-            name: 'Check List Summary',
-            propertyTypes: {
-              children: 'string'
-            }
-          },
-          {
-            component: CheckListCriteria,
-            name: 'Check List Criteria',
-            propertyTypes: {
-              children: {
-                custom: [
-                  {
-                    component: CheckListItem,
-                    name: 'Check List Item',
-                    propertyTypes: {
-                      children: 'string'
-                    }
-                  }
-                ]
-              }
-            }
-          }
-        ]
-      }
-    }
-  },
-  // {
-  //   component: CheckListSummary,
-  //   name: 'Check List Summary',
-  //   propertyTypes: {
-  //     children: 'string'
-  //   }
-  // },
-  // {
-  //   component: CheckListCriteria,
-  //   name: 'Check List Criteria',
-  //   propertyTypes: {
-  //     children: {
-  //       allowed: ['Check List Item']
-  //     }
-  //   }
-  // },
-  // {
-  //   component: CheckListItem, TODO: this element does not show up in a card with a check list summary - the componentTypes is lacking the check list item because it does not look down the tree
-  //   name: 'Check List Item',
-  //   propertyTypes: {
-  //     children: 'string'
-  //   }
-  // },
-  {
-    component: AccordionCard,
-    name: 'TEST ACCORDION CARD',
-    propertyTypes: {
-      title: 'string',
-      children: 'component'
-    }
-  },
-  {
-    component: SectionCard,
-    name: 'Section',
-    propertyTypes: {
-      title: 'string',
-      children: {
-        custom: [
-          {
-            component: SectionMainBanner,
-            name: 'Main Banner',
-            propertyTypes: {
-              children: 'string'
-            }
-          },
-          {
-            component: Section,
-            name: 'Body',
-            propertyTypes: {
-              children: 'string'
-            }
-          },
-          {
-            component: SectionSubBanner,
-            name: 'Section Sub Banner',
-            propertyTypes: {
-              children: 'string',
-            }
-          }
-        ]
-      }
-    }
-  },
-];
-
-export type ComponentId = string;
-
-type AppState = { 
+export type AppState = { 
   componentList: GeneratedComponent[];
   selectedId: ComponentId;
   htmlOutput: string;
 };
 
-class App extends Component<{}, AppState> {
+class App extends Component<AppProps, AppState> {
 
   state: AppState = {
     componentList: [],
@@ -214,7 +50,7 @@ class App extends Component<{}, AppState> {
 
   generateHtml = () => {
     const renderedComponents = this.state.componentList.map(info => {
-      const componentInfo = mapping.find(structure => structure.name === info.name);
+      const componentInfo = this.props.componentStructures.find(structure => structure.name === info.name);
       if (!componentInfo) {
         throw new Error(`Component ${info.name} was not found!`);
       }
