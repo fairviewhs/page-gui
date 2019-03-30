@@ -3,7 +3,7 @@ import AddNewInput from './AddNewInput';
 import FormInput from './FormInput';
 
 import uuid from 'uuid/v4';
-import { ComponentId } from '../App';
+import { ComponentStructure, GeneratedComponent, BaseComponent, BaseProperty, ComponentValues } from '../types';
 
 // Types
 export type ComponentProperty = {

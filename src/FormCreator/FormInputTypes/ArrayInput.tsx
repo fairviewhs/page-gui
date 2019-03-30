@@ -1,5 +1,5 @@
 import React, { Component, ChangeEvent } from 'react';
-import { ArrayProperty } from '../FormCreator';
+import { ArrayProperty } from '../../types';
 
 export interface ArrayInputProps {
   onChange: (index: number, value: any) => any;

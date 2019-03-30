@@ -1,5 +1,5 @@
 import React, { Component, ChangeEvent, Fragment } from 'react';
-import FormCreator, { ComponentValues, ComponentProperties, BaseProperty, ComponentStructure, GeneratedComponent } from './FormCreator';
+import { ComponentProperties, ComponentValues, BaseProperty, ComponentStructure, GeneratedComponent } from '../types';
 
 export interface FormInputProps {
   propertyTypes: ComponentProperties;

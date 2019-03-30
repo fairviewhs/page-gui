@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ComponentStructure, GeneratedComponent } from './FormCreator';
+import { BaseComponent, GeneratedComponent, ComponentStructure, BaseComponentName } from '../types';
 
 export interface CompileComponentsProps {
   componentList: GeneratedComponent[];

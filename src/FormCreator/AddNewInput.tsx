@@ -1,5 +1,5 @@
 import React, { Component, FormEvent, ChangeEvent } from 'react';
-import { ComponentStructure } from './FormCreator';
+import { ComponentStructure } from '../types';
 
 export interface AddNewInputProps {
   onNewComponent: (componentName: string) => any;

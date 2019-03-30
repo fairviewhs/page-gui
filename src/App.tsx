@@ -4,7 +4,7 @@ import './_global.scss';
 import './_templates.scss';
 import './responsive.scss';
 
-import FormCreator, { ComponentStructure, GeneratedComponent, ComponentValues, BaseProperty } from './FormCreator/FormCreator';
+
 import CompileComponents from './FormCreator/CompileComponents';
 
 import Ribbon from './Templates/Ribbon';
@@ -24,6 +24,8 @@ import CheckListItem from './Templates/CheckList/CheckListItem';
 import CheckList from './Templates/CheckList/CheckList';
 
 import { renderToString } from 'react-dom/server';
+
+import { BaseProperty, ComponentStructure, BaseComponent, GeneratedComponent, ComponentId, ComponentValues, isGeneratedComponentArray } from './types';
 
 const generateDefaultValue = (type: BaseProperty) => {
   if (typeof type === 'object' || type === 'component') {
