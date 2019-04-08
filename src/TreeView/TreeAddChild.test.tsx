@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { mount } from 'enzyme';
+import Select from 'react-select';
 import TreeAddChild from './TreeAddChild';
 import { ComponentStructure } from '../types';
 
@@ -29,23 +30,27 @@ describe('TreeAddChild', () => {
       preventDefault: jest.fn()
     }
   });
-it('defaults to the first structure value', () => {
-    // Please note that refs only work with mount https://github.com/airbnb/enzyme/issues/1394
-    const wrapper = mount(<TreeAddChild onAddComponent={addComponent} componentStructures={componentStructures} />);
-    wrapper.find('form').first().simulate('submit', submitEvent);
-    expect(addComponent).toBeCalledWith('First');
+  it('defaults to nothing', () => {
+
   });
   it('displays a list of components', () => {
     const wrapper = mount(<TreeAddChild onAddComponent={addComponent} componentStructures={componentStructures} />);
-    expect(wrapper.find('select').first()).toMatchSnapshot();
+    expect(wrapper.find(Select).first().props().options).toMatchSnapshot();
   });
-  it('calls onAddComponent when component is submitted', () => {
-    const wrapper = mount(<TreeAddChild onAddComponent={addComponent} componentStructures={componentStructures} />);
-    // Select the second option
-    wrapper.find('select').first().simulate('change', { target: { value: 'Second' } });
-    // Submit
-    wrapper.find('form').first().simulate('submit', submitEvent);
-    expect(submitEvent.preventDefault).toBeCalled();
-    expect(addComponent).toBeCalledWith('Second');
-  });
+  describe('when Add button is clicked', () => {
+    let wrapper;
+    beforeEach(() => {
+      wrapper = mount(<TreeAddChild onAddComponent={addComponent} componentStructures={componentStructures} />);
+      // Select the second option
+      wrapper.find(Select).first().props().onChange({ value: 'Second', label: 'Second' });
+      // Click
+      wrapper.find('button').last().simulate('click');
+    });
+    it('calls onAddComponent', () => {
+      expect(addComponent).toBeCalledWith('Second');
+    });
+    it('remove selected component value', () => {
+      expect(wrapper.find(Select).last().props().value).toBe(null);
+    })
+  })
 });

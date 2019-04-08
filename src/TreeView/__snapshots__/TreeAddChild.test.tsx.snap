@@ -1,20 +1,14 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`TreeAddChild displays a list of components 1`] = `
-<select
-  onChange={[Function]}
->
-  <option
-    key="First"
-    value="First"
-  >
-    First
-  </option>
-  <option
-    key="Second"
-    value="Second"
-  >
-    Second
-  </option>
-</select>
+Array [
+  Object {
+    "label": "First",
+    "value": "First",
+  },
+  Object {
+    "label": "Second",
+    "value": "Second",
+  },
+]
 `;
