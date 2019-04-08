@@ -1,0 +1,11 @@
+.item {
+  border: 5px solid black;
+}
+
+.item.selected {
+  border-color: red;
+}
+
+.indent {
+  margin-left: 10px;
+}
