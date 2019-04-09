@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BaseComponent, GeneratedComponent, ComponentStructure, BaseComponentName } from '../types';
+import { BaseComponent, GeneratedComponent, ComponentStructure, BaseComponentName } from './types';
 
 export interface CompileComponentsProps {
   baseComponents: BaseComponent<any>[];

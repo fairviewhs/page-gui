@@ -6,7 +6,7 @@ import './responsive.scss';
 import 'draft-js/dist/Draft.css';
 
 
-import CompileComponents from './FormCreator/CompileComponents';
+import CompileComponents from './CompileComponents';
 
 import { isString, has } from 'lodash';
 import uuid from 'uuid/v4';
