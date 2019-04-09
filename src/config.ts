@@ -1,5 +1,10 @@
 import { BaseComponent, ComponentStructure, BaseProperty } from "./types";
 
+import ParagraphInput from "./BaseComponents/ParagraphInput";
+import Paragraph from "./BaseComponents/Paragraph";
+import { EditorState } from "draft-js";
+import StringInput from "./BaseComponents/StringInput";
+import StringRender from "./BaseComponents/StringRender";
 import Ribbon from "./Templates/Ribbon";
 import RibbonCard from "./Templates/RibbonCard";
 import SmallRibbonCard from "./Templates/SmallRibbonCard";
@@ -24,13 +29,27 @@ const config = {
   generateDefaultValue: (type: BaseProperty): any => {
     if (typeof type === 'object' || type === 'component') {
       return [];
-    } else if (type === 'string' || type === 'paragraph') {
+    } else if (type === 'string') {
       return '';
+    } else if (type === 'paragraph') { 
+      return EditorState.createEmpty();
     } else {
       throw new TypeError(`Could not generate default value for unknown property type "${type}"`);
     }
   },
   baseInputs: [
+    {
+      name: 'paragraph',
+      inputComponent: ParagraphInput,
+      renderComponent: Paragraph,
+      defaultValue: EditorState.createEmpty()
+    },
+    {
+      name: 'string',
+      inputComponent: StringInput,
+      renderComponent: StringRender,
+      defaultValue: ''
+    }
   ] as BaseComponent<any>[],
   componentStructures: [
     {

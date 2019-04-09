@@ -9,6 +9,8 @@
     "@types/node": "^10.12.21",
     "@types/react": "^16.8.2",
     "@types/react-dom": "^16.8.0",
+    "classnames": "^2.2.6",
+    "draft-js": "^0.10.5",
     "lodash": "^4.17.11",
     "node-sass": "^4.11.0",
     "react": "^16.8.1",
@@ -35,10 +37,12 @@
     "not op_mini all"
   ],
   "devDependencies": {
+    "@types/classnames": "^2.2.7",
+    "@types/draft-js": "^0.10.29",
+    "@types/enzyme": "^3.9.1",
     "@types/lodash": "^4.14.123",
     "@types/react-select": "^2.0.15",
     "@types/uuid": "^3.4.4",
-    "@types/enzyme": "^3.9.1",
     "enzyme": "^3.9.0",
     "enzyme-adapter-react-16": "^1.11.2",
     "enzyme-to-json": "^3.3.5"
