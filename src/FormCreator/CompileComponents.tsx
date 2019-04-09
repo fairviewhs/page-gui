@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { BaseComponent, GeneratedComponent, ComponentStructure, BaseComponentName } from '../types';
 
 export interface CompileComponentsProps {
+  baseComponents: BaseComponent<any>[];
   componentList: GeneratedComponent[];
   componentTypes: ComponentStructure[];
 }
@@ -16,8 +17,8 @@ export default class CompileComponents extends Component<CompileComponentsProps>
         throw new Error(`Component ${info.name} was not found!`);
       }
       const values = Object.entries(info.values).reduce((prevOptions, [property, value]) => {
+        const type = componentInfo.propertyTypes[property];
         if (Array.isArray(value)) { // GeneratedComponent[]
-          const type = componentInfo.propertyTypes[property];
           let validTypes: ComponentStructure[] = [];
           if (typeof type === 'object' && !Array.isArray(type)) {
             const { allowed = [], custom = [] } = type;
@@ -30,8 +31,18 @@ export default class CompileComponents extends Component<CompileComponentsProps>
           }
           return {
             ...prevOptions,
-            [property]: <CompileComponents key={property} componentList={value as GeneratedComponent[]} componentTypes={validTypes} /> // TODO: type check
+            [property]: <CompileComponents key={property} componentList={value} componentTypes={validTypes} baseComponents={this.props.baseComponents} /> // TODO: type check
           }
+        }
+        // value is a base value name
+        // TODO: handle baseproperty === 'component'
+        const baseComponent = this.props.baseComponents.find(base => base.name === (type as BaseComponentName));
+        if (!baseComponent) {
+          throw new Error(`BaseComponent "${type}" was not found.`);
+        }
+        return {
+          ...prevOptions,
+          [property]: <baseComponent.renderComponent>{value}</baseComponent.renderComponent>
         }
         return {
           ...prevOptions,
