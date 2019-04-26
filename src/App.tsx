@@ -58,7 +58,8 @@ class App extends Component<AppProps, AppState> {
     return await Object.entries(structure.propertyTypes).reduce(async (prevDefaults, [propertyName, type]) => {
       let defaultValue;
       // if type is a basecomponent name
-      if (isString(type)) {
+      if (type === 'component') defaultValue = [];
+      else if (isString(type) && type != 'component') {
         const baseComponent = this.props.baseComponents.find(base => base.name === type);
         if (!baseComponent) throw new Error(`BaseComponent "${type}" was not found.`);
         defaultValue = baseComponent.defaultValue;
