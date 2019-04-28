@@ -13,7 +13,10 @@ export type ComponentProperties = {
   [propertyName: string]: BaseProperty// | ArrayProperty;
 };
 
+export type ComponentStructureId = string;
+
 export type ComponentStructure = {
+  id: ComponentStructureId;
   component: ComponentType<any>;
   name: string;
   propertyTypes: ComponentProperties;
