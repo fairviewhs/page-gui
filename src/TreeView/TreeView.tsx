@@ -36,7 +36,7 @@ export default class TreeView extends Component<TreeViewProps, any> {
       const itemStyle = component.id === this.props.selectedId ? `${styles.item} ${styles.selected}` : styles.item;
       return (
         <div className={itemStyle} key={component.id} onClick={this.handleSelect(component.id)}>
-          <h1>{component.name}</h1>
+          <h2> <b>></b>  &nbsp; {component.name} </h2>
           {subTree}
         </div>
       );

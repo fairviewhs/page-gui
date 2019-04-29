@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat:400,300,700');
+
 body {
   margin: 0;
   padding: 0;
@@ -11,4 +13,45 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+#modal {
+  width: 100px;
+}
+
+#main-wrapper {
+  display: flex;
+  background: #f2f2f2;
+  min-height: 100vh;
+}
+
+#component-wrapper {
+  padding: 130px;
+  z-index: 10;
+  width: 50%;
+}
+
+.tree-view {
+  width: 250px;
+  background: #DCDDDF;
+  overflow: scroll;
+  padding-top: 20px;
+  border-right: 1px solid #AAA;
+  padding-left: 10px;
+  flex-grow: 2;
+}
+
+.tree-view h2 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 18px;
+  font-weight: 900;
+  line-height: 20px;
+  color: #1c1c1c;
+  vertical-align: middle;
+  padding-left: 15px;
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  margin: 0;
+  margin-bottom: 30px;
 }
