@@ -33,7 +33,6 @@ export type ComponentValues = {
 export type GeneratedComponent = {
   componentType: ComponentStructureId;
   id: ComponentId;
-  name: string;
   values: ComponentValues;
 }
 
@@ -62,7 +61,7 @@ export type BaseComponent<T> = {
 
 export const isGeneratedComponent = 
   (value: any): value is GeneratedComponent =>
-    has(value, 'name') && has(value, 'values');
+    has(value, 'id') && has(value, 'values');
 
 export const isGeneratedComponentArray = 
   (value: any[]): value is GeneratedComponent[] =>

@@ -19,7 +19,7 @@ export default class TreeModal extends Component<TreeModalProps, any> {
   handleChange = (propName: string) => (value: any) => this.props.onChange(propName, value);
 
   public render() {
-    const { name, values } = this.props.component;
+    const { values } = this.props.component;
     const baseComponentValuesEl = Object.entries(this.props.componentStructure.propertyTypes)
       .reduce((prevBaseProps: JSX.Element[], [ propName, type ]) => {
         // if type is not a string then it is a component/list
@@ -78,7 +78,7 @@ export default class TreeModal extends Component<TreeModalProps, any> {
 
     return (
       <div className={styles.modal}>
-        <h2>Edit "{name}" Component </h2>
+        <h2>Edit "{this.props.componentStructure.name}" Component </h2>
         <div onClick={this.props.onDelete}>Delete</div>
         <h3>Values:</h3>
         {baseComponentValuesEl}

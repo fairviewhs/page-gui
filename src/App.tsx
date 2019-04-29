@@ -17,7 +17,7 @@ import TreeModal from './TreeView/TreeModal';
 import { isArray } from 'util';
 import TreeAddChild from './TreeView/TreeAddChild';
 
-import { ComponentStructure, BaseComponent, GeneratedComponent, ComponentId, ComponentValues, isGeneratedComponentArray, BaseProperty } from './types';
+import { ComponentStructure, BaseComponent, GeneratedComponent, ComponentId, ComponentValues, isGeneratedComponentArray, BaseProperty, isGeneratedComponent } from './types';
 
 export type AppProps = {
   baseComponents: BaseComponent<any>[];
@@ -43,9 +43,9 @@ class App extends Component<AppProps, AppState> {
 
   generateHtml = () => {
     const renderedComponents = this.state.componentList.map(info => {
-      const componentInfo = this.props.componentStructures.find(structure => structure.name === info.name);
+      const componentInfo = this.props.componentStructures.find(structure => structure.id === info.componentType);
       if (!componentInfo) {
-        throw new Error(`Component ${info.name} was not found!`);
+        throw new Error(`Component type "${info.componentType}" was not found!`);
       }
       return <componentInfo.component {...info.values}/>
     });
@@ -92,7 +92,6 @@ class App extends Component<AppProps, AppState> {
     if (!structure) return;
     const newGeneratedComponent = {
       componentType: structure.id,
-      name: newComponentName,
       id: uuid(),
       values: await this.generateDefaultValues(structure)
     } as GeneratedComponent;
@@ -135,14 +134,16 @@ class App extends Component<AppProps, AppState> {
   }
 
   findGeneratedComponent = (values: GeneratedComponent[], find: (value: GeneratedComponent) => boolean): GeneratedComponent | null => {
-    const surface = values.find(value => find(value));
-    if (!!surface) return surface;
     return values.reduce((prevFound: null | GeneratedComponent, value) => {
       if (!!prevFound) return prevFound;
+      else if (find(value)) return value;
       return Object.values(value.values)
         .reduce((foundValue: GeneratedComponent | null, value) => {
-          if (!!foundValue) return foundValue;
-          if (isArray(value) && isGeneratedComponentArray(value)) {
+          if (!!foundValue) {
+            return foundValue;
+          } else if (isGeneratedComponent(value) && find(value)) {
+            return value;
+          } else if (Array.isArray(value) && isGeneratedComponentArray(value)) {
             return this.findGeneratedComponent(value, find);
           }
           return null;
@@ -241,7 +242,7 @@ class App extends Component<AppProps, AppState> {
   } => {
     const selectedComponent = this.findGeneratedComponent(this.state.componentList, component => component.id === this.state.selectedId);
     if (!selectedComponent) return {}; // TODO: better error message
-    const selectedComponentStructure = this.findComponentStructure(this.props.componentStructures, componentStructure => componentStructure.name === selectedComponent.name);
+    const selectedComponentStructure = this.findComponentStructure(this.props.componentStructures, componentStructure => componentStructure.id === selectedComponent.componentType);
     if (!selectedComponentStructure) return {}; // TODO: better error message
     return Object.entries(selectedComponentStructure.propertyTypes)
       .reduce((prevList, [ propName, type]) => {
@@ -275,8 +276,8 @@ class App extends Component<AppProps, AppState> {
       :
       null;
 
-    const selectedGeneratedComponent = this.findGeneratedComponent(this.state.componentList, (value) => value.id === this.state.selectedId);
-    const selectedComponentStructure = selectedGeneratedComponent !== null ? this.findComponentStructure(this.props.componentStructures, (value) => value.name === selectedGeneratedComponent.name) : null;
+    const selectedGeneratedComponent = this.findGeneratedComponent(this.state.componentList, (component) => component.id === this.state.selectedId);
+    const selectedComponentStructure = selectedGeneratedComponent !== null ? this.findComponentStructure(this.props.componentStructures, (value) => value.id === selectedGeneratedComponent.componentType) : null;
     const selectedChildComponentStructures = !!this.state.selectedId ? this.getComponentStructuresForSelected() : null;
 
     return (
