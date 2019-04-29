@@ -12,9 +12,9 @@ export default class CompileComponents extends Component<CompileComponentsProps>
   public render() {
     console.log(this.props)
     const compiledComponents = this.props.componentList.map(info => {
-      const componentInfo = this.props.componentTypes.find(structure => structure.name === info.name);
+      const componentInfo = this.props.componentTypes.find(structure => structure.id === info.componentType);
       if (!componentInfo) {
-        throw new Error(`Component ${info.name} was not found!`);
+        throw new Error(`Component type "${info.componentType}" was not found!`);
       }
       const values = Object.entries(info.values).reduce((prevOptions, [property, value]) => {
         const type = componentInfo.propertyTypes[property];
