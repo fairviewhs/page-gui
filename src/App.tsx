@@ -91,6 +91,7 @@ class App extends Component<AppProps, AppState> {
     const structure = this.findComponentStructure(this.props.componentStructures, value => value.name === newComponentName);
     if (!structure) return;
     const newGeneratedComponent = {
+      componentType: structure.id,
       name: newComponentName,
       id: uuid(),
       values: await this.generateDefaultValues(structure)
