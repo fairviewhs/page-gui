@@ -31,8 +31,9 @@ export type ComponentValues = {
 }
 
 export type GeneratedComponent = {
-  name: string;
+  componentType: ComponentStructureId;
   id: ComponentId;
+  name: string;
   values: ComponentValues;
 }
 
