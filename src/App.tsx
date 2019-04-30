@@ -58,7 +58,8 @@ class App extends Component<AppProps, AppState> {
     return await Object.entries(structure.propertyTypes).reduce(async (prevDefaults, [propertyName, type]) => {
       let defaultValue;
       // if type is a basecomponent name
-      if (isString(type) && type !== 'component') {
+      if (type === 'component') defaultValue = [];
+      else if (isString(type) && type != 'component') {        
         const baseComponent = this.props.baseComponents.find(base => base.name === type);
         if (!baseComponent) throw new Error(`BaseComponent "${type}" was not found.`);
         defaultValue = baseComponent.defaultValue;
@@ -281,19 +282,24 @@ class App extends Component<AppProps, AppState> {
     const selectedChildComponentStructures = !!this.state.selectedId ? this.getComponentStructuresForSelected() : null;
 
     return (
-      <div style={{ display: 'flex', backgroundColor: '#ddd', minHeight: '100vh' }}>
-        <div style={{ margin: 'auto', width: '80%', zIndex: 10 }}>
-          <CompileComponents
-            componentList={this.state.componentList}
-            componentTypes={this.props.componentStructures}
-            baseComponents={this.props.baseComponents}
-          />
+      <div id="main-wrapper">
+        <div className="tree-view">
+          <h2> Tree View: </h2>
           <TreeView 
             selectedId={this.state.selectedId}
             onSelect={this.handleSelect}
             componentList={this.state.componentList}
             componentTypes={this.props.componentStructures}
           />
+        </div>
+        <div id="component-wrapper">
+          <CompileComponents
+            componentList={this.state.componentList}
+            componentTypes={this.props.componentStructures}
+            baseComponents={this.props.baseComponents}
+          />
+        </div>
+        <div id="modal">
           {
             !!selectedGeneratedComponent && !!selectedComponentStructure && !!selectedChildComponentStructures &&
             <TreeModal
@@ -306,13 +312,15 @@ class App extends Component<AppProps, AppState> {
               childComponentStructures={selectedChildComponentStructures}
             />
           }
+        </div>
+        <div>
           <TreeAddChild
             onAddComponent={this.handleAdd}
             componentStructures={this.props.componentStructures}
           />
           <button onClick={this.generateHtml}>Generate HTML</button>
-          {htmlOut}
         </div>
+        {htmlOut}
       </div>
     );
   }
