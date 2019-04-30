@@ -54,6 +54,7 @@ const config = {
   ] as BaseComponent<any>[],
   componentStructures: [
     {
+      id: 'ribbon',
       component: Ribbon,
       name: 'Ribbon',
       propertyTypes: {
@@ -61,6 +62,7 @@ const config = {
       }
     },
     {
+      id: 'ribbon-card',
       component: RibbonCard,
       name: 'Ribbon Card',
       propertyTypes: {
@@ -69,6 +71,7 @@ const config = {
       }
     },
     {
+      id: 'small-ribbon-card',
       component: SmallRibbonCard,
       name: 'Small Ribbon Card',
       propertyTypes: {
@@ -77,6 +80,7 @@ const config = {
       }
     },
     {
+      id: 'basic-card',
       component: Card,
       name: 'Basic Card',
       propertyTypes: {
@@ -86,6 +90,7 @@ const config = {
       }
     },
     {
+      id: 'image-card',
       component: ImageCard,
       name: 'Image Card',
       propertyTypes: {
@@ -94,6 +99,7 @@ const config = {
       }
     },
     {
+      id: 'title-card',
       component: TitleCard,
       name: 'Title Card',
       propertyTypes: {
@@ -102,6 +108,7 @@ const config = {
       }
     },
     {
+      id: 'accordion-card',
       component: AccordionCard,
       name: 'Accordion Card',
       propertyTypes: {
@@ -124,6 +131,7 @@ const config = {
         children: {
           custom: [
             {
+              id: 'check-list-summary',
               component: CheckListSummary,
               name: 'Check List Summary',
               propertyTypes: {
@@ -131,12 +139,14 @@ const config = {
               }
             },
             {
+              id: 'check-list-criteria',
               component: CheckListCriteria,
               name: 'Check List Criteria',
               propertyTypes: {
                 children: {
                   custom: [
                     {
+                      id: 'check-list-item',
                       component: CheckListItem,
                       name: 'Check List Item',
                       propertyTypes: {
@@ -152,14 +162,7 @@ const config = {
       }
     },
     {
-      component: AccordionCard,
-      name: 'TEST ACCORDION CARD',
-      propertyTypes: {
-        title: 'string',
-        children: 'component'
-      }
-    },
-    {
+      id: 'section-card',
       component: SectionCard,
       name: 'Section',
       propertyTypes: {
@@ -167,6 +170,7 @@ const config = {
         children: {
           custom: [
             {
+              id: 'main-banner',
               component: SectionMainBanner,
               name: 'Main Banner',
               propertyTypes: {
@@ -174,6 +178,7 @@ const config = {
               }
             },
             {
+              id: 'section',
               component: Section,
               name: 'Body',
               propertyTypes: {
@@ -181,6 +186,7 @@ const config = {
               }
             },
             {
+              id: 'section-subbanner',
               component: SectionSubBanner,
               name: 'Section Sub Banner',
               propertyTypes: {
@@ -192,6 +198,7 @@ const config = {
       }
     },
     {
+      id: 'link',
       component: Link,
       name: 'Link',
       propertyTypes: {
@@ -201,6 +208,7 @@ const config = {
       }
     },
     {
+      id: 'table',
       component: Table,
       name: 'Table',
       propertyTypes: {
@@ -208,6 +216,7 @@ const config = {
         children: {
           custom: [
             {
+              id: 'table-row',
               component: TableRow,
               name: 'Row',
               propertyTypes: {
@@ -215,6 +224,7 @@ const config = {
                 children: {
                   custom: [
                     {
+                      id: 'table-column',
                       component: TableColumn,
                       name: 'Column',
                       propertyTypes: {
