@@ -1,9 +1,9 @@
-import React, { Component, ChangeEvent, FormEvent, Fragment } from 'react';
-import { ComponentStructure } from '../types';
+import React, { Component, Fragment } from 'react';
+import { ComponentStructure, ComponentStructureId } from '../types';
 import Select from 'react-select';
 
 export interface TreeAddChildProps {
-  onAddComponent: (componentName: string) => any;
+  onAddComponent: (id: ComponentStructureId) => any;
   componentStructures: ComponentStructure[];
 }
 
@@ -21,7 +21,7 @@ export default class TreeAddChild extends Component<TreeAddChildProps, TreeAddCh
     if (!!selected) {
       const componentInfo = this.props.componentStructures.find(value => value.name === selected.value);
       if (!!componentInfo) {
-        this.props.onAddComponent(selected.value);
+        this.props.onAddComponent(componentInfo.id);
         this.setState({ selected: null });
       }
     }

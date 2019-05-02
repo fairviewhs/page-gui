@@ -3,28 +3,31 @@ import TreeAddChild from './TreeAddChild';
 import { isString } from 'lodash';
 
 import styles from './TreeModal.module.css';
-import { BaseComponent, ComponentStructure, GeneratedComponent } from '../types';
+import { ComponentStructure, GeneratedComponent } from '../types';
+import { inject, observer } from 'mobx-react';
+import { BaseComponentStore } from '../stores/BaseComponent.store';
 
 export interface TreeModalProps {
   onAddComponent: (componentName: string, propName?: string) => any;
   onChange: (propName: string, value: any) => any;
   onDelete: () => any;
-  baseComponents: BaseComponent<any>[];
+  baseComponentStore: BaseComponentStore;
   componentStructure: ComponentStructure;
   childComponentStructures: { [propName: string]: ComponentStructure[] };
   component: GeneratedComponent;
 }
 
-export default class TreeModal extends Component<TreeModalProps, any> {
+@observer
+class TreeModal extends Component<TreeModalProps, any> {
   handleChange = (propName: string) => (value: any) => this.props.onChange(propName, value);
 
   public render() {
     const { values } = this.props.component;
     const baseComponentValuesEl = Object.entries(this.props.componentStructure.propertyTypes)
-      .reduce((prevBaseProps: JSX.Element[], [ propName, type ]) => {
+      .reduce((prevBaseProps: JSX.Element[], [propName, type]) => {
         // if type is not a string then it is a component/list
         if (!isString(type)) return prevBaseProps;
-        const baseComponent = this.props.baseComponents.find(base => base.name === type);
+        const baseComponent = this.props.baseComponentStore.baseComponents.find(base => base.name === type);
         if (!baseComponent) {
           // TODO: log only on dev?
           console.warn(`Base Component for type "${type}" was not found in base components.`);
@@ -32,7 +35,7 @@ export default class TreeModal extends Component<TreeModalProps, any> {
         }
         const value = values[propName];
         const element = (
-          <Fragment>
+          <Fragment key={propName}>
             <h3>Value "{propName}":</h3>
             <baseComponent.inputComponent
               onChange={this.handleChange(propName)}
@@ -87,3 +90,5 @@ export default class TreeModal extends Component<TreeModalProps, any> {
     );
   }
 }
+
+export default inject(store => ({ baseComponentStore: store.baseComponentStore }))(TreeModal);
