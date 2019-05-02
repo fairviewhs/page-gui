@@ -66,3 +66,9 @@ export const isGeneratedComponent =
 export const isGeneratedComponentArray = 
   (value: any[]): value is GeneratedComponent[] =>
     value.length > 0 && value.every(val => isGeneratedComponent(val));
+
+export const isComponentProperty =
+  (value: any): value is ComponentProperty =>
+    has(value, 'allowed') || has(value, 'custom');
+
+export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
