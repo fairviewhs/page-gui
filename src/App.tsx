@@ -111,20 +111,23 @@ class App extends Component<AppProps, AppState> {
     const selectedChildComponentStructures = !!this.state.selectedId && !!selectedComponentStructure ? this.props.componentStructureStore.flatten(selectedComponentStructure) : null;
 
     return (
-      <div style={{ display: 'flex', backgroundColor: '#ddd', minHeight: '100vh' }}>
-        <div style={{ margin: 'auto', width: '80%', zIndex: 10 }}>
-          <div>
-            <CompileComponents
-              componentList={this.props.generatedComponentStore.components}
-              componentTypes={this.props.componentStructureStore.componentStructures}
-            />
-          </div>
+      <div id="main-wrapper">
+        <div className="tree-view">
+          <h2> Tree View: </h2>
           <TreeView 
             selectedId={this.state.selectedId}
             onSelect={this.handleSelect}
             componentList={this.props.generatedComponentStore.components}
             componentTypes={this.props.componentStructureStore.componentStructures}
           />
+        </div>
+        <div id="component-wrapper">
+          <CompileComponents
+            componentList={this.props.generatedComponentStore.components}
+            componentTypes={this.props.componentStructureStore.componentStructures}
+          />
+        </div>
+        <div id="modal">
           {
             !!selectedGeneratedComponent && !!selectedComponentStructure && !!selectedChildComponentStructures &&
             <TreeModal
@@ -136,12 +139,15 @@ class App extends Component<AppProps, AppState> {
               childComponentStructures={selectedChildComponentStructures}
             />
           }
+        </div>
+        <div>
           <TreeAddChild
             onAddComponent={this.handleAdd}
             componentStructures={this.props.componentStructureStore.componentStructures}
           />
-          {htmlOut}
+          <button onClick={this.generateHtml}>Generate HTML</button>
         </div>
+        {htmlOut}
       </div>
     );
   }

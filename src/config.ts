@@ -12,6 +12,7 @@ import Card from "./Templates/Card";
 import ImageCard from "./Templates/ImageCard";
 import TitleCard from "./Templates/TitleCard";
 import AccordionCard from "./Templates/AccordionCard";
+import AccordionStackItem from './Templates/AccordionStackCard';
 import CheckList from "./Templates/CheckList/CheckList";
 import CheckListSummary from "./Templates/CheckList/CheckListSummary";
 import CheckListCriteria from "./Templates/CheckList/CheckListCriteria";
@@ -110,6 +111,15 @@ const config = {
       id: 'accordion-card',
       component: AccordionCard,
       name: 'Accordion Card',
+      propertyTypes: {
+        title: 'string',
+        children: 'string'
+      }
+    },
+    {
+      id: 'accordion-stack-item',
+      component: AccordionStackItem,
+      name: 'Accordion Stack Item',
       propertyTypes: {
         title: 'string',
         children: 'string'

@@ -321,13 +321,11 @@ templates-cont-r {
 
 
 
- /*accordion stack styling
-*/
-.accordion-stack{
-  width:100%;
-  margin: 0%;
-
-   h2{
+/* accordion stack styling */
+.accordion-stack {
+  width: calc(100% + 2rem);
+  margin: -1rem;
+  h2 {
     font-size: 1.2rem;  
     color: rgb(20, 20 ,20);
   }
@@ -337,15 +335,14 @@ templates-cont-r {
     background-color: $white;
     border-bottom: 1px solid $cloud-gray;
 }
-#accordion-stack-button {
+#accordion-stack-button{
     background-color: $white;
-    background-image: asset-data-url("embed/arrow-thin-up.png");
+    background-image: url("./images/arrow-thin-up.png");
 }
 #a-s-content{
   background-color: $white;
   border-bottom: 1px solid $cloud-gray;
-
- }
+}
 
 
  /*table+heading */
