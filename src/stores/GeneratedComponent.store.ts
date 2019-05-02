@@ -84,32 +84,6 @@ export class GeneratedComponentStore {
       // Please note that we map the parent after the children
     }, [] as GeneratedComponent[]);
   }
-  
-  delete = (deleteVal: (value: GeneratedComponent) => boolean, list: GeneratedComponent[]): GeneratedComponent[] => {
-    return list.reduce((prev: GeneratedComponent[], value: GeneratedComponent) => {
-      if (deleteVal(value)) {
-        return prev;
-      }
-      const filteredValues = Object.entries(value.values).reduce((prevVals, [ propName, subValue ]) => {
-        let newValue = subValue;
-        // If subValue is a GeneratedComponent[] call deleteGeneratedComponentRecursive on it
-        if (Array.isArray(subValue) && isGeneratedComponentArray(subValue)) {
-          newValue = this.delete(deleteVal, subValue);
-        }
-        return {
-          ...prevVals,
-          [propName]: newValue
-        }
-      }, {} as ComponentValues)
-      return [
-        ...prev,
-        {
-          ...value,
-          values: filteredValues
-        }
-      ];
-    }, [] as GeneratedComponent[]);
-  }
 
   // TODO: add at position
   @action add = (componentToAdd: GeneratedComponent, parent?: { id: ComponentId, propertyName: string }) => {
