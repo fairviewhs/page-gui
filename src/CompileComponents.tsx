@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
-import { BaseComponent, GeneratedComponent, ComponentStructure, BaseComponentName } from './types';
+import { GeneratedComponent, ComponentStructure, BaseComponentName } from './types';
+import { observer, inject } from 'mobx-react';
+import { BaseComponentStore } from './stores/BaseComponent.store';
 
 export interface CompileComponentsProps {
-  baseComponents: BaseComponent<any>[];
+  baseComponentStore: BaseComponentStore;
   componentList: GeneratedComponent[];
   componentTypes: ComponentStructure[];
 }
 
-export default class CompileComponents extends Component<CompileComponentsProps> {
+@observer
+class CompileComponents extends Component<CompileComponentsProps> {
 
   public render() {
     console.log(this.props)
@@ -31,12 +34,12 @@ export default class CompileComponents extends Component<CompileComponentsProps>
           }
           return {
             ...prevOptions,
-            [property]: <CompileComponents key={property} componentList={value} componentTypes={validTypes} baseComponents={this.props.baseComponents} /> // TODO: type check
+            [property]: <CompileComponentsWithStore key={property} componentList={value} componentTypes={validTypes} /> // TODO: type check
           }
         }
         // value is a base value name
         // TODO: handle baseproperty === 'component'
-        const baseComponent = this.props.baseComponents.find(base => base.name === (type as BaseComponentName));
+        const baseComponent = this.props.baseComponentStore.baseComponents.find(base => base.name === (type as BaseComponentName));
         if (!baseComponent) {
           throw new Error(`BaseComponent "${type}" was not found.`);
         }
@@ -55,3 +58,7 @@ export default class CompileComponents extends Component<CompileComponentsProps>
     return compiledComponents;
   }
 }
+
+const CompileComponentsWithStore = inject(store => ({ baseComponentStore: store.baseComponentStore }))(CompileComponents);
+
+export default CompileComponentsWithStore;
