@@ -1,49 +1,50 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component, Fragment, ChangeEvent } from 'react';
 
 import './_global.scss';
 import './_templates.scss';
 import './responsive.scss';
 import 'draft-js/dist/Draft.css';
 
-
 import CompileComponents from './CompileComponents';
 
-import { isString, has } from 'lodash';
 import uuid from 'uuid/v4';
 
 import { renderToString } from 'react-dom/server';
 import TreeView from './TreeView/TreeView';
 import TreeModal from './TreeView/TreeModal';
-import { isArray } from 'util';
+import { isNumber } from 'lodash'; 
 import TreeAddChild from './TreeView/TreeAddChild';
 
-import { ComponentStructure, BaseComponent, GeneratedComponent, ComponentId, ComponentValues, isGeneratedComponentArray, BaseProperty, isGeneratedComponent } from './types';
+// Stores
+import { GeneratedComponentStore } from './stores/GeneratedComponent.store';
+import { ComponentStructureStore } from './stores/ComponentStructure.store';
+import { inject, observer } from 'mobx-react';
+
+import { GeneratedComponent, ComponentId } from './types';
 
 export type AppProps = {
-  baseComponents: BaseComponent<any>[];
-  componentStructures: ComponentStructure[];
-  generateDefaultValue: (type: BaseProperty) => any;
+  componentStructureStore: ComponentStructureStore;
+  generatedComponentStore: GeneratedComponentStore;
 }
 
 export type AppState = { 
-  componentList: GeneratedComponent[];
   selectedId: ComponentId;
   htmlOutput: string;
+  id: string;
 };
 
+@observer
 class App extends Component<AppProps, AppState> {
 
   state: AppState = {
-    componentList: [],
     selectedId: '',
-    htmlOutput: ''
+    htmlOutput: '',
+    id: ''
   }
 
-  // HTML LOGIC
-
   generateHtml = () => {
-    const renderedComponents = this.state.componentList.map(info => {
-      const componentInfo = this.props.componentStructures.find(structure => structure.id === info.componentType);
+    const renderedComponents = this.props.generatedComponentStore.components.map(info => {
+      const componentInfo = this.props.componentStructureStore.findStructureRecursive(structure => structure.id === info.componentType);
       if (!componentInfo) {
         throw new Error(`Component type "${info.componentType}" was not found!`);
       }
@@ -52,222 +53,51 @@ class App extends Component<AppProps, AppState> {
     this.setState({ htmlOutput: renderToString(<div>{renderedComponents}</div>) })
   }
 
-  // HELPER LOGIC
-
-  generateDefaultValues = async (structure: ComponentStructure): Promise<ComponentValues> => {
-    return await Object.entries(structure.propertyTypes).reduce(async (prevDefaults, [propertyName, type]) => {
-      let defaultValue;
-      // if type is a basecomponent name
-      if (isString(type) && type !== 'component') {
-        const baseComponent = this.props.baseComponents.find(base => base.name === type);
-        if (!baseComponent) throw new Error(`BaseComponent "${type}" was not found.`);
-        defaultValue = baseComponent.defaultValue;
-        console.log({
-          defaultValue,
-          propertyName,
-          type
-        })
-      } else if (structure.defaultValues && structure.defaultValues[propertyName] !== undefined) {
-        defaultValue = structure.defaultValues[propertyName];
-      } else { // TODO: FIX
-        defaultValue = await Promise.resolve(this.props.generateDefaultValue(type));
-      }
-      return {
-        ...(await prevDefaults),
-        [propertyName]: defaultValue
-      }
-    }, Promise.resolve({}));
-  }
-
-  // FORM LOGIC
-
-  handleAdd = async (newComponentName: string, propName?: string) => {
-
-    console.log({
-      newComponentName,
-      propName
-    })
-    
-    const structure = this.findComponentStructure(this.props.componentStructures, value => value.name === newComponentName);
+  handleAdd = (componentStructureId: string, propName?: string) => {
+    const structure = this.props.componentStructureStore.findStructureRecursive(structure => structure.id === componentStructureId);
     if (!structure) return;
     const newGeneratedComponent = {
       componentType: structure.id,
       id: uuid(),
-      values: await this.generateDefaultValues(structure)
+      values: this.props.componentStructureStore.getDefaultValue(structure.id)
     } as GeneratedComponent;
-    this.setState(prevState => {
-      if (prevState.selectedId && !!propName) {
-        const parentComponent = this.findGeneratedComponent(prevState.componentList, component => component.id == prevState.selectedId);
-        if (!parentComponent) {
-          throw Error(`Parent component not found.`);
-        }
-        const valueComponentList = [
-          ...parentComponent.values[propName] as GeneratedComponent[],
-          newGeneratedComponent
-        ]
-        return {
-          componentList: this.changeSelectedGeneratedComponentValue(prevState.componentList, prevState.selectedId, propName, valueComponentList)
-        }
-      }
-
-      return {
-        componentList: [
-          ...prevState.componentList,
-          newGeneratedComponent
-        ]
-      }
-    });
+    const parentDetails = !propName ? undefined : { id: this.state.selectedId, propertyName: propName };
+    this.props.generatedComponentStore.add(newGeneratedComponent, parentDetails);
   }
 
-  findComponentStructure = (values: ComponentStructure[], find: (value: ComponentStructure) => boolean): ComponentStructure | null => {
-    const surface = values.find(value => find(value));
-    if (!!surface) return surface;
-    return values.reduce((prevFound: null | ComponentStructure, value) => {
-      if (!!prevFound) return prevFound;
-      return Object.values(value.propertyTypes)
-        .reduce((foundValue: ComponentStructure | null, value) => {
-          // if value is a string then it is a baseComponent, thus we can't go deeper
-          if (!!foundValue || isString(value) || (!isString(value) && !has(value, 'custom'))) return foundValue;
-          return this.findComponentStructure(value.custom as ComponentStructure[], find);
-        }, null);
-    }, null);
-  }
-
-  findGeneratedComponent = (values: GeneratedComponent[], find: (value: GeneratedComponent) => boolean): GeneratedComponent | null => {
-    return values.reduce((prevFound: null | GeneratedComponent, value) => {
-      if (!!prevFound) return prevFound;
-      else if (find(value)) return value;
-      return Object.values(value.values)
-        .reduce((foundValue: GeneratedComponent | null, value) => {
-          if (!!foundValue) {
-            return foundValue;
-          } else if (isGeneratedComponent(value) && find(value)) {
-            return value;
-          } else if (Array.isArray(value) && isGeneratedComponentArray(value)) {
-            return this.findGeneratedComponent(value, find);
-          }
-          return null;
-        }, null);
-    }, null);
-  }
-
-  deleteGeneratedComponentRecursive = (values: GeneratedComponent[], deleteVal: (value: GeneratedComponent) => boolean): GeneratedComponent[] => {
-    return values.reduce((prev: GeneratedComponent[], value: GeneratedComponent) => {
-      if (deleteVal(value)) {
-        return prev;
-      }
-
-      const filteredValues = Object.entries(value.values).reduce((prevVals, [ propName, subValue ]) => {
-        let newValue = subValue;
-        
-        // If subValue is a GeneratedComponent[] call deleteGeneratedComponentRecursive on it
-        if (Array.isArray(subValue) && isGeneratedComponentArray(subValue)) {
-          newValue = this.deleteGeneratedComponentRecursive(subValue, deleteVal);
-        }
-
-        return {
-          ...prevVals,
-          [propName]: newValue
-        }
-      }, {} as ComponentValues)
-
-      return [
-        ...prev,
-        {
-          ...value,
-          values: filteredValues
-        }
-      ];
-    }, [] as GeneratedComponent[]);
-  }
-  
   handleSelect = (id: ComponentId) => {
     this.setState({
       selectedId: id
     });
   }
 
-  handleDelete = () =>
-    this.setState(prevState => ({
-      componentList: this.deleteGeneratedComponentRecursive(prevState.componentList, (value) => value.id === prevState.selectedId),
-      selectedId: ''
-    }))
-
-  handleRemove = (index: number) => {
-    console.log(`Remove Index: ${index}`);
-    this.setState({
-      componentList: this.state.componentList.filter((component, ind) => ind !== index)
-    });
+  handleDelete = () => {
+    this.props.generatedComponentStore.components = this.props.generatedComponentStore.filter(component => component.id !== this.state.selectedId);
+    this.setState({ selectedId: '' });
   }
 
-  changeSelectedGeneratedComponentValue = (components: GeneratedComponent[], selectedId: ComponentId, propName: string, newValue: any | GeneratedComponent[]): GeneratedComponent[] => {
-    return components.map(component => {
-      if (component.id === selectedId) {
+  handleChange = (propName: string, value: any) => {
+    this.props.generatedComponentStore.components = this.props.generatedComponentStore.map(component => {
+      if (component.id === this.state.selectedId) {
         return {
           ...component,
           values: {
             ...component.values,
-            [propName]: newValue
+            [propName]: value
           }
-        };
+        }
       }
-
-      const modifiedValues = Object.entries(component.values)
-        .reduce((prevProps, [ propName, value ]) => {
-          let modifiedValue = value;
-          if (Array.isArray(value) && isGeneratedComponentArray(value)) {
-            modifiedValue = this.changeSelectedGeneratedComponentValue(value, selectedId, propName, newValue);
-          }
-          return {
-            ...prevProps,
-            [propName]: modifiedValue
-          }
-        }, {});
-      
-      return {
-        ...component,
-        values: modifiedValues
-      }
+      return component;
     })
   }
 
-  handleChange = (propName: string, value: any) => {
-    this.setState(prevState => ({
-      componentList: this.changeSelectedGeneratedComponentValue(prevState.componentList, prevState.selectedId, propName, value)
-    }));
-  }
-
-  getComponentStructuresForSelected = (): {
-    [propName: string]: ComponentStructure[]
-  } => {
-    const selectedComponent = this.findGeneratedComponent(this.state.componentList, component => component.id === this.state.selectedId);
-    if (!selectedComponent) return {}; // TODO: better error message
-    const selectedComponentStructure = this.findComponentStructure(this.props.componentStructures, componentStructure => componentStructure.id === selectedComponent.componentType);
-    if (!selectedComponentStructure) return {}; // TODO: better error message
-    return Object.entries(selectedComponentStructure.propertyTypes)
-      .reduce((prevList, [ propName, type]) => {
-        if (type === 'component') { // Include all components
-          return {
-            ...prevList,
-            [propName]: this.props.componentStructures
-          }
-        } else if (typeof type === 'object') { // include allowed and custom
-          const { allowed = [], custom = [] } = type;
-          const allowedStructures = this.props.componentStructures.filter(structure => allowed.includes(structure.name));
-          return {
-            ...prevList,
-            [propName]: [
-              ...allowedStructures,
-              ...custom
-            ]
-          }
-        }
-        return prevList;
-      }, {} as { [propName: string]: ComponentStructure[] });
+  change = (event: ChangeEvent<HTMLInputElement>) => {
+    if (isNumber(event.target.value)) {
+      this.setState({ id: event.target.value });
+    }
   }
 
   render() {
-
     const htmlOut = !!this.state.htmlOutput ?
       <Fragment>
         <h2>HTML Output</h2>
@@ -276,23 +106,24 @@ class App extends Component<AppProps, AppState> {
       :
       null;
 
-    const selectedGeneratedComponent = this.findGeneratedComponent(this.state.componentList, (component) => component.id === this.state.selectedId);
-    const selectedComponentStructure = selectedGeneratedComponent !== null ? this.findComponentStructure(this.props.componentStructures, (value) => value.id === selectedGeneratedComponent.componentType) : null;
-    const selectedChildComponentStructures = !!this.state.selectedId ? this.getComponentStructuresForSelected() : null;
+    const selectedGeneratedComponent = this.props.generatedComponentStore.find(component => component.id === this.state.selectedId);
+    const selectedComponentStructure = selectedGeneratedComponent !== null ? this.props.componentStructureStore.findStructureRecursive(structure => structure.id === selectedGeneratedComponent.componentType) : null;
+    const selectedChildComponentStructures = !!this.state.selectedId && !!selectedComponentStructure ? this.props.componentStructureStore.flatten(selectedComponentStructure) : null;
 
     return (
       <div style={{ display: 'flex', backgroundColor: '#ddd', minHeight: '100vh' }}>
         <div style={{ margin: 'auto', width: '80%', zIndex: 10 }}>
-          <CompileComponents
-            componentList={this.state.componentList}
-            componentTypes={this.props.componentStructures}
-            baseComponents={this.props.baseComponents}
-          />
+          <div>
+            <CompileComponents
+              componentList={this.props.generatedComponentStore.components}
+              componentTypes={this.props.componentStructureStore.componentStructures}
+            />
+          </div>
           <TreeView 
             selectedId={this.state.selectedId}
             onSelect={this.handleSelect}
-            componentList={this.state.componentList}
-            componentTypes={this.props.componentStructures}
+            componentList={this.props.generatedComponentStore.components}
+            componentTypes={this.props.componentStructureStore.componentStructures}
           />
           {
             !!selectedGeneratedComponent && !!selectedComponentStructure && !!selectedChildComponentStructures &&
@@ -300,7 +131,6 @@ class App extends Component<AppProps, AppState> {
               onAddComponent={this.handleAdd}
               onChange={this.handleChange}
               onDelete={this.handleDelete}
-              baseComponents={this.props.baseComponents}
               component={selectedGeneratedComponent}
               componentStructure={selectedComponentStructure}
               childComponentStructures={selectedChildComponentStructures}
@@ -308,9 +138,8 @@ class App extends Component<AppProps, AppState> {
           }
           <TreeAddChild
             onAddComponent={this.handleAdd}
-            componentStructures={this.props.componentStructures}
+            componentStructures={this.props.componentStructureStore.componentStructures}
           />
-          <button onClick={this.generateHtml}>Generate HTML</button>
           {htmlOut}
         </div>
       </div>
@@ -318,4 +147,4 @@ class App extends Component<AppProps, AppState> {
   }
 }
 
-export default App;
+export default inject(store => ({ componentStructureStore: store.componentStructureStore, generatedComponentStore: store.generatedComponentStore }))(App);
