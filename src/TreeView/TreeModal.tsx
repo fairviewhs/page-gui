@@ -56,7 +56,7 @@ class TreeModal extends Component<TreeModalProps, any> {
         if (type === 'component') {
           return [
             ...prevValueEls,
-            <Fragment>
+            <Fragment key={propName}>
               <h3>Value "{propName}":</h3>
               <TreeAddChild
                 onAddComponent={handleParentComponentAdd(propName)}
@@ -67,7 +67,7 @@ class TreeModal extends Component<TreeModalProps, any> {
         } else if (!isString(type)) { // type is a ComponentProperty
           return [
             ...prevValueEls,
-            <Fragment>
+            <Fragment key={propName}>
               <h3>Value "{propName}":</h3>
               <TreeAddChild
                 onAddComponent={handleParentComponentAdd(propName)}

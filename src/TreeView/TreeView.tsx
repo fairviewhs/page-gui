@@ -35,10 +35,10 @@ export default class TreeView extends Component<TreeViewProps, any> {
 
   public render() {
     const list = this.props.componentList.map(component => {
-      const subTree = Object.values(component.values)
-        .filter(value => Array.isArray(value))
-        .map(value => (
-          <div className={styles.indent}>
+      const subTree = Object.entries(component.values)
+        .filter(([propName, value]) => Array.isArray(value))
+        .map(([propName, value]) => (
+          <div className={styles.indent} key={propName}>
             <TreeView
               componentList={value as GeneratedComponent[]}
               componentTypes={this.props.componentTypes}
