@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { GeneratedComponent, ComponentStructure, BaseComponentName } from './types';
+import { GeneratedComponent, ComponentStructure, BaseComponentName, ComponentId } from './types';
 import { observer, inject } from 'mobx-react';
 import { BaseComponentStore } from './stores/BaseComponent.store';
 
 export interface CompileComponentsProps {
+  onClick: (componentId: ComponentId) => any;
   baseComponentStore: BaseComponentStore;
   componentList: GeneratedComponent[];
   componentTypes: ComponentStructure[];
@@ -12,8 +13,12 @@ export interface CompileComponentsProps {
 @observer
 class CompileComponents extends Component<CompileComponentsProps> {
 
+  handleClick = (id: ComponentId) => (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    event.stopPropagation();
+    this.props.onClick(id);
+  };
+
   public render() {
-    console.log(this.props)
     const compiledComponents = this.props.componentList.map(info => {
       const componentInfo = this.props.componentTypes.find(structure => structure.id === info.componentType);
       if (!componentInfo) {
@@ -34,7 +39,7 @@ class CompileComponents extends Component<CompileComponentsProps> {
           }
           return {
             ...prevOptions,
-            [property]: <CompileComponentsWithStore key={property} componentList={value} componentTypes={validTypes} /> // TODO: type check
+            [property]: <CompileComponentsWithStore onClick={this.props.onClick} key={property} componentList={value} componentTypes={validTypes} /> // TODO: type check
           }
         }
         // value is a base value name
@@ -47,12 +52,12 @@ class CompileComponents extends Component<CompileComponentsProps> {
           ...prevOptions,
           [property]: <baseComponent.renderComponent>{value}</baseComponent.renderComponent>
         }
-        return {
-          ...prevOptions,
-          [property]: value
-        }
       }, {})
-      return <componentInfo.component key={info.id} {...values}/>
+      return (
+        <div onClick={this.handleClick(info.id)}>
+          <componentInfo.component key={info.id} {...values}/>
+        </div>
+      );
     });
 
     return compiledComponents;

@@ -123,6 +123,7 @@ class App extends Component<AppProps, AppState> {
         </div>
         <div id="component-wrapper">
           <CompileComponents
+            onClick={this.handleSelect}
             componentList={this.props.generatedComponentStore.components}
             componentTypes={this.props.componentStructureStore.componentStructures}
           />
