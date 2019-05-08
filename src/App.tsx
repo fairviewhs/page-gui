@@ -12,7 +12,7 @@ import uuid from 'uuid/v4';
 import { renderToString } from 'react-dom/server';
 import TreeView from './TreeView/TreeView';
 import TreeModal from './TreeView/TreeModal';
-import { isNumber } from 'lodash'; 
+import { isNumber } from 'lodash';
 import TreeAddChild from './TreeView/TreeAddChild';
 
 // Stores
@@ -27,7 +27,7 @@ export type AppProps = {
   generatedComponentStore: GeneratedComponentStore;
 }
 
-export type AppState = { 
+export type AppState = {
   selectedId: ComponentId;
   htmlOutput: string;
   id: string;
@@ -114,12 +114,19 @@ class App extends Component<AppProps, AppState> {
       <div id="main-wrapper">
         <div className="tree-view">
           <h2> Tree View: </h2>
-          <TreeView 
+          <TreeView
             selectedId={this.state.selectedId}
             onSelect={this.handleSelect}
             componentList={this.props.generatedComponentStore.components}
             componentTypes={this.props.componentStructureStore.componentStructures}
           />
+          <div>
+          <TreeAddChild
+            onAddComponent={this.handleAdd}
+            componentStructures={this.props.componentStructureStore.componentStructures}
+          />
+          <button onClick={this.generateHtml}>Generate HTML</button>
+        </div>
         </div>
         <div id="component-wrapper">
           <CompileComponents
@@ -140,13 +147,6 @@ class App extends Component<AppProps, AppState> {
               childComponentStructures={selectedChildComponentStructures}
             />
           }
-        </div>
-        <div>
-          <TreeAddChild
-            onAddComponent={this.handleAdd}
-            componentStructures={this.props.componentStructureStore.componentStructures}
-          />
-          <button onClick={this.generateHtml}>Generate HTML</button>
         </div>
         {htmlOut}
       </div>
