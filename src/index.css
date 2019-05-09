@@ -15,8 +15,8 @@ code {
     monospace;
 }
 
-#modal {
-  width: 100px;
+.modal-container {
+  position: relative;
 }
 
 #main-wrapper {
@@ -26,9 +26,10 @@ code {
 }
 
 #component-wrapper {
-  padding: 130px;
+  padding: 30px;
   z-index: 10;
   width: 50%;
+  flex-grow: 2;
 }
 
 .tree-view {
@@ -38,7 +39,7 @@ code {
   padding-top: 20px;
   border-right: 1px solid #AAA;
   padding-left: 10px;
-  flex-grow: 2;
+  flex-grow: 1;
 }
 
 .tree-view h2 {

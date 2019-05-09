@@ -1,5 +1,12 @@
 .modal {
-  background-color: cyan;
-  border: 2px solid black;
+  background-color: #dcdddf;
+  border: 1px solid #AAA;
   border-radius: 5px;
+
+  position: fixed;
+  bottom: 0.5rem;
+  right: 0.5rem;
+  min-width: 30%;
+  z-index: 10;
+  padding: 10px;
 }

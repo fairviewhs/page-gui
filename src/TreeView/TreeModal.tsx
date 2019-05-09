@@ -48,7 +48,7 @@ class TreeModal extends Component<TreeModalProps, any> {
           element
         ];
       }, [] as JSX.Element[]);
-    
+
     const handleParentComponentAdd = (propName: string) => (componentName: string) => this.props.onAddComponent(componentName, propName);
 
     const componentValuesEl = Object.entries(this.props.componentStructure.propertyTypes)
