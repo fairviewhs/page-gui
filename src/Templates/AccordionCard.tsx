@@ -58,11 +58,11 @@ export default class AccordionCard extends Component<AccordionCardProps, any> {
       transition: 'max-height 0.2s ease-in-out, padding 0.2s ease-in-out',
     }
 
-    let arrowClass = 't-accordion-arrow-u';
+    let arrowClass = 't-accordion-arrow-d';
 
     if (maxHeight !== '0') {
       accordionStyle.padding = '1rem';
-      arrowClass = 't-accordion-arrow-d';
+      arrowClass = 't-accordion-arrow-u';
     } else {
       accordionStyle.paddingLeft = '1rem';
       accordionStyle.paddingRight = '1rem';
