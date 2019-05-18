@@ -1,0 +1,110 @@
+.columns {
+    display: flex;
+}
+
+.column {
+    margin: 0 2rem 0 0;
+}
+
+.column:last-child {
+    margin: 0;
+}
+
+.cardGroup {
+    background: #f9f9f9;
+    border-radius: 5px;
+    box-shadow: 1px 1px 5px rgba(0,0,0,.2);
+    margin: 0 0 1rem;
+    min-height: 2rem;
+    overflow: hidden;
+}
+
+.sectionBlock {
+
+    .sectionHeader {
+        background-color: #2c3347;
+        color: #fff;
+        display: flex;
+        padding: .5rem .5rem .5rem 1.5rem;
+
+        h2 {
+            margin: 0;
+        }
+    }
+
+    .sectionArrow {   
+        background-image: url("./images/arrow-thin-white.png");
+        background-repeat: no-repeat;
+        margin: 0 0 0 .2rem;
+        padding: 1rem;
+    }
+
+    .sectionBody {
+        box-sizing: border-box;
+        transition: all 1s ease;
+    }
+
+    &.collapse {
+
+        .sectionBody {
+            height: 0;
+        }
+    }
+
+    &.collapse.toggle {
+
+        .sectionBody {
+            height: auto;
+        }
+
+        .sectionArrow {
+            transform: scaleY(-1);
+        }
+    }
+
+    &.expand {
+
+        .sectionArrow {
+            transform: scaleY(-1);
+        }
+    }
+
+    &.expand.toggle {
+
+        .sectionBody {
+            height: 0;
+        }
+
+        .sectionArrow {
+            transform: scaleY(1);
+        }
+    }
+}
+
+@media only screen and (max-width: 600px) {
+
+    .sectionBlock {
+
+        &.expand {
+
+            .sectionBody {
+                height: 0;
+            }
+
+            .sectionArrow {
+                transform: scaleY(1);
+            }
+        }
+
+        &.expand.toggle {
+
+            .sectionBody {
+                height: auto;
+            }
+
+            .sectionArrow {
+                transform: scaleY(-1);
+            }
+        }
+    }
+}
