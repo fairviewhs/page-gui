@@ -32,6 +32,8 @@ import BlockSection from "./Templates/BlockSection";
 import CardGroup from "./Templates/CardGroup";
 import Column from "./Templates/Column";
 import Columns from "./Templates/Columns";
+import Text from "./Templates/Text";
+import Image from "./Templates/Image";
 
 const config = {
   generateDefaultValue: (type: BaseProperty): any => {
@@ -73,7 +75,8 @@ const config = {
       name: 'Section',
       propertyTypes: {
         title: 'string',
-        children: 'component'
+        mode: 'string',
+        children: 'component',
       }
     },
     {
@@ -98,6 +101,22 @@ const config = {
       name: 'Column Layout',
       propertyTypes: {
         children: 'component'
+      }
+    },
+    {
+      id: 'text',
+      component: Text,
+      name: 'Text Area',
+      propertyTypes: {
+        text: 'string'
+      }
+    },
+    {
+      id: 'image',
+      component: Image,
+      name: 'Image',
+      propertyTypes: {
+        url: 'string'
       }
     }
     // ,

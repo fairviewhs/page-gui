@@ -10,7 +10,7 @@ export default class CardGroup extends Component<CardGroupProps, any> {
     const { children } = this.props;
 
     return (
-      <div className="cardGroup">
+      <div className="cardGroup marginCard">
         {children}
       </div>
     );
