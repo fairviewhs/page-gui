@@ -26,6 +26,8 @@ import TableRow from "./Templates/Table/TableRow";
 import TableColumn from "./Templates/Table/TableColumn";
 import BooleanInput from "./BaseComponents/BooleanInput";
 import BooleanRender from "./BaseComponents/BooleanRender";
+import DropdownRender from "./BaseComponents/DropdownRender";
+import makeDropdownInput from "./BaseComponents/DropdownInput";
 
 // Reworked components
 import BlockSection from "./Templates/BlockSection";
@@ -65,6 +67,12 @@ const config = {
       inputComponent: BooleanInput,
       renderComponent: BooleanRender,
       defaultValue: false
+    },
+    {
+      name: 'dropdown-section',
+      inputComponent: makeDropdownInput(["banner", "section", "subsection", "accordian"]),
+      renderComponent: DropdownRender,
+      defaultValue: 'banner'
     }
   ] as BaseComponent<any>[],
   componentStructures: [
@@ -75,7 +83,7 @@ const config = {
       name: 'Section',
       propertyTypes: {
         title: 'string',
-        mode: 'string',
+        mode: 'dropdown-section',
         children: 'component',
       }
     },

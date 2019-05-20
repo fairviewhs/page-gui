@@ -38,7 +38,7 @@ export default class TreeAddChild extends Component<TreeAddChildProps, TreeAddCh
     }));
     return (
       <Fragment>
-        <Select menuPlacement="auto"
+        <Select menuPlacement="top"
           value={this.state.selected}
           onChange={this.handleChange}
           options={options}
