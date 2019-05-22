@@ -7,6 +7,8 @@
   bottom: 0.5rem;
   right: 0.5rem;
   min-width: 30%;
+  max-width: 75%;
+  max-height: 100%;
   z-index: 10;
   padding: 10px;
 }

@@ -116,7 +116,7 @@ const config = {
       component: Text,
       name: 'Text Area',
       propertyTypes: {
-        text: 'string'
+        text: 'paragraph'
       }
     },
     {

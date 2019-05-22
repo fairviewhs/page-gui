@@ -32,8 +32,7 @@ export default function makeDropdownInput(options: string[]){
       }));
 
       return (
-        <Select 
-          menuPlacment="top"
+        <Select menuPlacement="top"
           options={select_options}
           value={this.state.selected }
           onChange={this.handleChange}

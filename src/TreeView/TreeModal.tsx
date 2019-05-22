@@ -82,7 +82,7 @@ class TreeModal extends Component<TreeModalProps, any> {
     return (
       <div className={styles.modal}>
         <h2>Edit "{this.props.componentStructure.name}" Component </h2>
-        <div onClick={this.props.onDelete}>Delete</div>
+        <button onClick={this.props.onDelete}>Delete</button>
         <h3>Values:</h3>
         {baseComponentValuesEl}
         {componentValuesEl}

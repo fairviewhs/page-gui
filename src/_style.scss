@@ -97,6 +97,28 @@
     margin: 1rem;
 }
 
+.RichEditor-styleButton {
+    padding: 3px;
+    margin: 3px;
+    border-radius: 4px;
+    display: inline-block;
+    background-color: #dcdddf;
+    border: 1px solid #AAA;
+    &:hover {
+        background-color:#AAA;
+    }
+}
+
+.RichEditor-activeButton {
+    background-color: #888;
+}
+
+.RichEditor-editor {
+    max-height: 20rem;
+    overflow: auto;
+    background-color: white;
+}
+
 @media only screen and (max-width: 600px) {
 
     .sectionBlock {
