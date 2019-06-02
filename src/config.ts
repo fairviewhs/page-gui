@@ -1,32 +1,8 @@
-import { BaseComponent, ComponentStructure, BaseProperty } from "./types";
-
 import ParagraphInput from "./BaseComponents/ParagraphInput";
 import Paragraph from "./BaseComponents/Paragraph";
 import { EditorState } from "draft-js";
 import StringInput from "./BaseComponents/StringInput";
-import StringRender from "./BaseComponents/StringRender";
-import Ribbon from "./Templates/Ribbon";
-import RibbonCard from "./Templates/RibbonCard";
-import SmallRibbonCard from "./Templates/SmallRibbonCard";
-import Card from "./Templates/Card";
-import ImageCard from "./Templates/ImageCard";
-import TitleCard from "./Templates/TitleCard";
-import AccordionCard from "./Templates/AccordionCard";
-import AccordionStackItem from './Templates/AccordionStackCard';
-import CheckList from "./Templates/CheckList/CheckList";
-import CheckListSummary from "./Templates/CheckList/CheckListSummary";
-import CheckListCriteria from "./Templates/CheckList/CheckListCriteria";
-import CheckListItem from "./Templates/CheckList/CheckListItem";
-import SectionCard from "./Templates/SectionCard/SectionCard";
-import SectionMainBanner from "./Templates/SectionCard/SectionMainBanner";
-import SectionSubBanner from "./Templates/SectionCard/SectionSubBanner";
-import Link from "./Templates/Link";
-import Table from "./Templates/Table/Table";
-import TableRow from "./Templates/Table/TableRow";
-import TableColumn from "./Templates/Table/TableColumn";
 import BooleanInput from "./BaseComponents/BooleanInput";
-import BooleanRender from "./BaseComponents/BooleanRender";
-import DropdownRender from "./BaseComponents/DropdownRender";
 import makeDropdownInput from "./BaseComponents/DropdownInput";
 
 // Reworked components
@@ -36,45 +12,16 @@ import Column from "./Templates/Column";
 import Columns from "./Templates/Columns";
 import Text from "./Templates/Text";
 import Image from "./Templates/Image";
+import { ConfigStructure } from "./types";
+
+const paragraphInput = {
+  // defaultValue: EditorState.createEmpty(),
+  render: ParagraphInput,
+  toJSON: () => {},
+  fromJSON: () => {}
+}
 
 const config = {
-  generateDefaultValue: (type: BaseProperty): any => {
-    if (typeof type === 'object' || type === 'component') {
-      return [];
-    } else if (type === 'string') {
-      return '';
-    } else if (type === 'paragraph') { 
-      return EditorState.createEmpty();
-    } else {
-      throw new TypeError(`Could not generate default value for unknown property type "${type}"`);
-    }
-  },
-  baseInputs: [
-    {
-      name: 'paragraph',
-      inputComponent: ParagraphInput,
-      renderComponent: Paragraph,
-      defaultValue: EditorState.createEmpty()
-    },
-    {
-      name: 'string',
-      inputComponent: StringInput,
-      renderComponent: StringRender,
-      defaultValue: ''
-    },
-    {
-      name: 'boolean',
-      inputComponent: BooleanInput,
-      renderComponent: BooleanRender,
-      defaultValue: false
-    },
-    {
-      name: 'dropdown-section',
-      inputComponent: makeDropdownInput(["banner", "section", "subsection", "accordian"]),
-      renderComponent: DropdownRender,
-      defaultValue: 'banner'
-    }
-  ] as BaseComponent<any>[],
   componentStructures: [
     // Start reworked components
     {
@@ -82,9 +29,14 @@ const config = {
       component: BlockSection,
       name: 'Section',
       propertyTypes: {
-        title: 'string',
-        mode: 'dropdown-section',
-        children: 'component',
+        title: StringInput,
+        mode: makeDropdownInput(["banner", "section", "subsection", "accordian"]),
+        children: 'any'
+      },
+      defaultValues: {
+        title: 'hello world',
+        mode: 'banner',
+        children: []
       }
     },
     {
@@ -92,7 +44,10 @@ const config = {
       component: CardGroup,
       name: 'Card Group',
       propertyTypes: {
-        children: 'component'
+        children: 'any'
+      },
+      defaultValues: {
+        children: []
       }
     },
     {
@@ -100,7 +55,10 @@ const config = {
       component: Column,
       name: 'Column',
       propertyTypes: {
-        children: 'component'
+        children: 'any'
+      },
+      defaultValues: {
+        children: []
       }
     },
     {
@@ -108,7 +66,10 @@ const config = {
       component: Columns,
       name: 'Column Layout',
       propertyTypes: {
-        children: 'component'
+        children: 'any'
+      },
+      defaultValues: {
+        children: []
       }
     },
     {
@@ -116,7 +77,10 @@ const config = {
       component: Text,
       name: 'Text Area',
       propertyTypes: {
-        text: 'paragraph'
+        text: ParagraphInput
+      },
+      defaultValues: {
+        text: EditorState.createEmpty()
       }
     },
     {
@@ -124,10 +88,12 @@ const config = {
       component: Image,
       name: 'Image',
       propertyTypes: {
-        url: 'string'
+        url: StringInput
+      },
+      defaultValues: {
+        url: 'https://images.pexels.com/photos/104827/cat-pet-animal-domestic-104827.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500'
       }
-    }
-    // ,
+    },
 
     // {
     //   id: 'ribbon',
@@ -308,7 +274,7 @@ const config = {
     //     }
     //   }
     // }
-  ] as ComponentStructure[]
+  ] as ConfigStructure[]
 }
 
 export default config;
