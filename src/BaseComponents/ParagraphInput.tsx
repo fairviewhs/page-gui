@@ -1,9 +1,9 @@
 import React, { Component, KeyboardEvent, MouseEvent } from 'react';
-import { BaseComponentInputProps } from '../types';
+import { BasicInputComponent } from '../types';
 import { Editor, EditorState, RichUtils, getDefaultKeyBinding, DraftBlockType, DraftEditorCommand, DraftHandleValue, ContentBlock } from 'draft-js';
 import classNames from 'classnames';
 
-export default class ParagraphInput extends Component<BaseComponentInputProps<EditorState>, any> {
+export default class ParagraphInput extends Component<BasicInputComponent<EditorState>, any> {
   editor: null | Editor = null;
   focus = () => {
     if (!!this.editor) this.editor.focus();
@@ -55,7 +55,6 @@ export default class ParagraphInput extends Component<BaseComponentInputProps<Ed
 
   render() {
     const editorState = this.props.value;
-    console.log({editorState});
 
     // If the user changes block type before entering any text, we can
     // either style the placeholder or hide it. Let's just hide it now.

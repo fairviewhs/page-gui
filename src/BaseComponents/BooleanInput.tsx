@@ -1,7 +1,7 @@
 import React, { Component, ChangeEvent } from 'react';
-import { BaseComponentInputProps } from '../types';
+import { BasicInputComponent } from '../types';
 
-export default class BooleanInput extends Component<BaseComponentInputProps<boolean>> {
+export default class BooleanInput extends Component<BasicInputComponent<boolean>> {
   handleChange = (event: ChangeEvent<HTMLInputElement>) =>
     this.props.onChange(event.target.checked);
   public render() {

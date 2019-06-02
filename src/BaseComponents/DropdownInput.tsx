@@ -1,29 +1,12 @@
 import React, { Component, ChangeEvent } from 'react';
-import { BaseComponentInputProps } from '../types';
+import { BasicInputComponent } from '../types';
 import Select from 'react-select';
 
-/*export default class StringInput extends Component<BaseComponentInputProps<string>> {
-  handleChange = (event: ChangeEvent<HTMLInputElement>) =>
-    this.props.onChange(event.target.value); 
-  public render() {
-    return (
-      <input type="string" value={this.props.value} onChange={this.handleChange} />
-    );
-  }
-}*/
-
 export default function makeDropdownInput(options: string[]){
-  return class extends Component<BaseComponentInputProps<string>, any> {
-    /*handleChange = (event: ChangeEvent<HTMLInputElement>) =>
-      this.props.onChange(event.target.value);*/
-      handleChange = (selected) => {
-        this.setState({ selected });
-        this.props.onChange(selected.value);
-      }
+  return class extends Component<BasicInputComponent<string>, any> {
 
-    state = {
-      selected : null
-    }
+    handleChange = (selected) =>
+      this.props.onChange(selected.value);
     
     public render(){
       const select_options = options.map(name => ({
@@ -34,7 +17,7 @@ export default function makeDropdownInput(options: string[]){
       return (
         <Select menuPlacement="top"
           options={select_options}
-          value={this.state.selected }
+          value={select_options.find(option => option.value === this.props.value)}
           onChange={this.handleChange}
         />
       );
