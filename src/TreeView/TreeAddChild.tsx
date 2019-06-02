@@ -1,10 +1,10 @@
 import React, { Component, Fragment } from 'react';
-import { ComponentStructure, ComponentStructureId } from '../types';
 import Select from 'react-select';
+import { Structure } from '../types';
 
 export interface TreeAddChildProps {
-  onAddComponent: (id: ComponentStructureId) => any;
-  componentStructures: ComponentStructure[];
+  onAddComponent: (id: string) => any;
+  componentStructures: Structure[];
 }
 
 export interface TreeAddChildState {
