@@ -7,40 +7,69 @@ import { isPlainObject } from 'lodash';
 export class GeneratedComponent {
   public readonly id: string;
   public readonly componentType: string;
-  public readonly values: { [property: string]: any };
-  // public values: 'all' | { allowed?: string[], custom?: [] };
+  public readonly basicInputProps: { [property: string]: any };
+  public readonly componentListProps: { [property: string]: GeneratedComponent[] };
+
+  get values(): { [property: string]: any } {
+    const { basicInputProps, componentListProps } = this;
+    return {
+      ...basicInputProps,
+      ...componentListProps
+    }
+  }
 
   isValidValue = (propertyName: string, list: GeneratedComponent[]): boolean => {
-    const structureListId = this.flattedComponentListProps[propertyName].map(struct => struct.id);
+    const structureListId = this.flattenComponentListStructures[propertyName].map(struct => struct.id);
     return list.every(comp => structureListId.includes(comp.componentType));
   }
 
   // TODO: test
-  isValidValues = (values: { [prop: string]: any }): boolean => {
+  areValidValues = ({ basicInputProps, componentListProps }: { basicInputProps: { [property: string]: any }, componentListProps: { [property: string]: GeneratedComponent[] } }): boolean => {
     const { structure } = this;
-    // TODO: check all values exists
-    // TODO: check recursivly that componentListProps are valid
-    return !Object.entries(this.componentListProps)
+    const allBasicInputsHaveValues = Object.keys(structure.basicInputProps).every(key => key in basicInputProps);
+    if (!allBasicInputsHaveValues) {
+      return false;
+    }
+    return !Object.entries(this.flattenComponentListStructures)
       .some(([propertyName, structureList]) => {
-        const components = values[propertyName] as GeneratedComponent[];
+        const components = componentListProps[propertyName];
         return components.some(component => structureList.findIndex(structure => structure.id === component.componentType) === -1) // return true is there is a component with componentType that is not in the allowed components for property
-        // if (value.some()) {
-        //   return true;
-        // }
-        // return false;
-      }); // return false if there are some invalid properties
-  } 
+      }); // returns false if there are some invalid properties
+  }
 
-  constructor({ id = uuid(), componentType, values }: { id?: string, componentType: string, values?: { [property: string]: any } }) {
+  private static objectFilter = <T, K extends keyof T>(object: T, pred: (propertyName: K, value: T[K]) => boolean): T => 
+    Object.entries(object)
+      .filter(([property, value]) => pred(property as K, value))
+      .reduce((prev, [property, value]) => ({ ...prev, [property]: value }), {} as T);
+
+  constructor({ id = uuid(), componentType, basicInputProps, componentListProps, values }: { id?: string, componentType: string, basicInputProps?: { [property: string]: any }, componentListProps?: { [property: string]: GeneratedComponent[] }, values?: { [property: string]: any } }) {
     this.id = id;
     this.componentType = componentType;
-    if (values === undefined) {
-      this.values = this.structure.defaultValues;
+
+    const { structure } = this;
+    const { defaultValues } = structure;
+
+    if (values !== undefined) {
+      this.basicInputProps = GeneratedComponent.objectFilter(values, (key, value) => key in structure.basicInputProps);
+      this.componentListProps = GeneratedComponent.objectFilter(values, (key, value) => key in structure.componentListProps);
     } else {
-      if (!this.isValidValues) {
-        throw new TypeError(`Invalid values for component ${componentType}`);
+      if (basicInputProps === undefined) {
+        // Get defaults valus for basicInputsProps from structure's defaultValues
+        this.basicInputProps = GeneratedComponent.objectFilter(defaultValues, (key, value) => key in structure.basicInputProps);
+      } else {
+        this.basicInputProps = basicInputProps;
       }
-      this.values = values;
+  
+      if (componentListProps === undefined) {
+        // Get defaults valus for componentListProps from structure's defaultValues
+        this.componentListProps = GeneratedComponent.objectFilter(defaultValues, (key, value) => key in structure.componentListProps);
+      } else {
+        this.componentListProps = componentListProps;
+      }
+    }
+
+    if (!this.areValidValues({ componentListProps: this.componentListProps, basicInputProps: this.basicInputProps })) {
+      throw new TypeError(`Invalid property values provided for component "${componentType}"`)
     }
   }
 
@@ -50,17 +79,7 @@ export class GeneratedComponent {
     return structure;
   }
 
-  get componentListProps(): { [property: string]: GeneratedComponent[] } {
-    const propertiesWithList = Object.keys(this.structure.componentListProps);
-    return Object.entries(this.values)
-      .filter(([propertyName, value]) => propertiesWithList.includes(propertyName))
-      .reduce((prev, [propertyName, value]) => ({
-        ...prev,
-        [propertyName]: value
-      }), {});
-  }
-
-  get flattedComponentListProps(): { [property: string]: Structure[] } {
+  get flattenComponentListStructures(): { [property: string]: Structure[] } {
     return Object.entries(this.structure.componentListProps).reduce((prev, [propertyName, definition]) => {
       if (definition === 'any') {
         return {
@@ -78,12 +97,33 @@ export class GeneratedComponent {
   }
 
   get asJSON() {
-    const { id, componentType, values } = this;
-    // TODO: toJSON for basic inputs
+    const { id, componentType, componentListProps, basicInputProps } = this;
+    const { structure } = this;
+
+    const componentListPropsRecursive = Object.entries(componentListProps).reduce((prev, [key, list]) => ({
+      ...prev,
+      [key]: list.map(component => component.asJSON)
+    }), {});
+
+    const basicInputPropsToJSON = Object.entries(basicInputProps).reduce((prev, [key, value]) => {
+      const type = structure.basicInputProps[key];
+      if (isBasicInputDefinition(type) && type.toJSON !== undefined) {
+        return {
+          ...prev,
+          [key]: type.toJSON(value)
+        }
+      }
+      return {
+        ...prev,
+        [key]: value
+      };
+    }, {})
+
     return {
       id,
       componentType,
-      values
+      componentListProps: componentListPropsRecursive,
+      basicInputProps: basicInputPropsToJSON
     }
   }
 
@@ -91,13 +131,13 @@ export class GeneratedComponent {
     if (
       has(json, 'id') &&
       has(json, 'componentType') &&
-      has(json, 'values')
+      has(json, 'componentListProps') &&
+      has(json, 'basicInputProps')
     ) {
       const structure = componentStructureStore.find(structure => structure.id === json.componentType);
       if (!structure) throw TypeError(`Failed to parse json for Component with unknown componentType "${json.componentType}"`);
       
-      const subComponentListValues = Object.entries(json.values)
-        .filter(([propertyName, value]) => Object.keys(structure.componentListProps).includes(propertyName))
+      const subComponentListValues = Object.entries(json.componentListProps)
         .reduce((prev, [propertyName, value]) => {
           if (!Array.isArray(value)) {
             // acoording to strucuture value should be a Component[] but it is not.
@@ -109,25 +149,26 @@ export class GeneratedComponent {
           };
         }, {});
 
-      const basicInputValues = Object.entries(json.values)
-        .filter(([propertyName, value]) => Object.keys(structure.basicInputProps).includes(propertyName))
+      const basicInputValues = Object.entries(json.basicInputProps)
         .reduce((prev, [propertyName, value]: [string, any]) => {
-          const basicInputDefintion = structure.basicInputProps[propertyName];
-          const fromJSON = isPlainObject(basicInputDefintion) && has(basicInputDefintion, 'fromJSON') ? (basicInputDefintion as BasicInputDefinition<any>).fromJSON! : (value) => value;
+          const type = structure.basicInputProps[propertyName];
+          if (isBasicInputDefinition(type) && type.fromJSON !== undefined) {
+            return {
+              ...prev,
+              [propertyName] : type.fromJSON(value)
+            }
+          }
           return {
             ...prev,
-            [propertyName]: fromJSON(value)
+            [propertyName]: value
           }
         }, {});
       
       return new GeneratedComponent({
         id: json.id,
         componentType: json.componentType,
-        values: {
-          ...json.values,
-          ...basicInputValues,
-          ...subComponentListValues
-        }
+        componentListProps: subComponentListValues,
+        basicInputProps: basicInputValues
       });
     }
     throw new TypeError('Invalid json for a component.');
