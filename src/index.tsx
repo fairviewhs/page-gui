@@ -5,12 +5,10 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { Provider } from 'mobx-react';
 // Stores
-import baseComponentStore from './stores/BaseComponent.store';
 import generatedComponentStore from './stores/GeneratedComponent.store';
 import componentStructureStore from './stores/ComponentStructure.store';
 
 export const store = () => ({
-  baseComponentStore,
   generatedComponentStore,
   componentStructureStore
 })

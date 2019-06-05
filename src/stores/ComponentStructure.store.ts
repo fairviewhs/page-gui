@@ -1,79 +1,52 @@
-import { ComponentStructure, ComponentValues, ComponentStructureId } from "../types";
 import { observable } from 'mobx';
-import baseComponentStore from './BaseComponent.store';
-import { isString, get, has, isObject } from 'lodash';
 import config from "../config";
+import { Structure, ConfigStructure, isComponentListProp } from '../types';
 
 export class ComponentStructureStore {
-  @observable componentStructures: ComponentStructure[];
+  @observable componentStructures: Structure[];
 
-  constructor( componentStructures: ComponentStructure[] = []) {
-    this.componentStructures = componentStructures;
+  private static createStructureFromConfig = (configStructure: ConfigStructure): Structure => {
+    const { propertyTypes, ...rest } = configStructure;
+
+    const componentListProps = {};
+    const basicInputProps = {};
+    
+    Object.entries(propertyTypes)
+      .forEach(([propertyName, type]) => {
+        if (isComponentListProp<ConfigStructure>(type)) {
+          if (type !== 'any') {
+            const { custom = [], allowed = [] } = type;
+            const customRecursive = custom.map(customConfigStructure => ComponentStructureStore.createStructureFromConfig(customConfigStructure));
+            componentListProps[propertyName] = { allowed, custom: customRecursive };
+          } else {
+            componentListProps[propertyName] = type;
+          }
+        } else {
+          basicInputProps[propertyName] = type;
+        }
+      })
+
+    return {
+      ...rest,
+      componentListProps,
+      basicInputProps
+    }
   }
 
-  findStructureRecursive = (find: (structure: ComponentStructure) => boolean, list: ComponentStructure[] = this.componentStructures): ComponentStructure | null => {
-    const surfaceLevel = list.find(structure => find(structure));
+  constructor(componentStructures: ConfigStructure[] = []) {
+    this.componentStructures = componentStructures.map(configStructure => ComponentStructureStore.createStructureFromConfig(configStructure));
+  }
+
+  find = (findFn: (structure: Structure) => boolean, list: Structure[] = this.componentStructures): Structure | null => {
+    const surfaceLevel = list.find(structure => findFn(structure));
     if (!!surfaceLevel) return surfaceLevel;
-    return list.reduce((prevFound: null | ComponentStructure, value) => {
+    return list.reduce((prevFound: null | Structure, value) => {
       if (!!prevFound) return prevFound;
-      return Object.values(value.propertyTypes)
-        .reduce((foundValue: ComponentStructure | null, value) => {
-          // if value is a string then it is a baseComponent, thus we can't go deeper
-          if (!!foundValue || isString(value) || (!isString(value) && !has(value, 'custom'))) return foundValue;
-          return this.findStructureRecursive(find, value.custom as ComponentStructure[]);
+      return Object.values(value.componentListProps)
+        .reduce((foundValue: Structure | null, value) => {
+          return value !== 'any' ? this.find(findFn, value.custom) : null;
         }, null);
     }, null);
-  }
-
-  getDefaultValue = (id: ComponentStructureId): ComponentValues => {
-    const structure = this.findStructureRecursive(structure => structure.id === id);
-    if (!structure) throw new TypeError(`Structure was not found for id "${id}"`);
-    return Object.entries(structure.propertyTypes).reduce((prevDefaults: ComponentValues, [propertyName, type]) => {
-      let defaultValue;
-
-      if (type === 'component' || isObject(type)) { // Type is a component list
-        defaultValue = [];
-      } else if (isString(type)) { // Type is a base component name
-        console.log({type});
-        const baseComponent = baseComponentStore.baseComponents.find(base => base.name === type);
-        if (!baseComponent) throw new TypeError(`BaseComponent "${type}" was not found in the list.`);
-        defaultValue = baseComponent.defaultValue;
-      } else if (get(structure, ["defaultValues", propertyName])) {
-        defaultValue = get(structure, ["defaultValues", propertyName])
-      }
-
-      return {
-        ...prevDefaults,
-        [propertyName]: defaultValue
-      }
-    }, {});
-  }
-
-  // is flattens the component structure tree down to a list for a specific structure
-  flatten = (structure: ComponentStructure): {
-    [propertyName: string]: ComponentStructure[]
-  } => {
-    if (!structure) return {}; // TODO: better error message
-    return Object.entries(structure.propertyTypes)
-      .reduce((prevList, [ propName, type]) => {
-        if (type === 'component') { // Include all components
-          return {
-            ...prevList,
-            [propName]: this.componentStructures
-          }
-        } else if (typeof type === 'object') { // include allowed and custom
-          const { allowed = [], custom = [] } = type;
-          const allowedStructures = this.componentStructures.filter(structure => allowed.includes(structure.name)); // TODO: work on for flatten filter because this only works for the surface components
-          return {
-            ...prevList,
-            [propName]: [
-              ...allowedStructures,
-              ...custom
-            ]
-          }
-        }
-        return prevList;
-      }, {} as { [propName: string]: ComponentStructure[] });
   }
 }
 

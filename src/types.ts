@@ -1,74 +1,54 @@
 import { ComponentType } from 'react';
-import { has } from 'lodash';
-
-export type ComponentId = string;
-
-export type ComponentProperty = {
-  allowed?: string[];
-  custom?: ComponentStructure[];
-}
-export type BaseProperty = BaseComponentName | 'component' | ComponentProperty;
-export type ArrayProperty = BaseProperty[];
-export type ComponentProperties = {
-  [propertyName: string]: BaseProperty// | ArrayProperty;
-};
-
-export type ComponentStructureId = string;
-
-export type ComponentStructure = {
-  id: ComponentStructureId;
-  component: ComponentType<any>;
-  name: string;
-  propertyTypes: ComponentProperties;
-  defaultValues?: ComponentValues;
-}
-
-// Values
-// export type BaseValue = string | boolean;
-// export type ArrayValue = BaseValue[];
-export type ComponentValues = {
-  [propertyName: string]: any | GeneratedComponent[]; // note that any is the value for the BaseComponents
-}
-
-export type GeneratedComponent = {
-  componentType: ComponentStructureId;
-  id: ComponentId;
-  values: ComponentValues;
-}
-
-// Base is the final component of the tree
-// It includes the paragraph/string input and boolean input
-export type BaseComponentName = string;
-
-export interface BaseComponentInputProps<T> {
-  onChange: (value: T) => any;
-  value: T;
-}
-
-export interface BaseComponentRenderProps<T> {
-  children: T;
-}
-
-export type BaseInputComponent<T> = ComponentType<BaseComponentInputProps<T>>;
-export type BaseRenderComponent<T> = ComponentType<BaseComponentRenderProps<T>>;
-
-export type BaseComponent<T> = {
-  name: BaseComponentName;
-  inputComponent: BaseInputComponent<T>;
-  renderComponent: BaseRenderComponent<T>;
-  defaultValue?: T;
-}
-
-export const isGeneratedComponent = 
-  (value: any): value is GeneratedComponent =>
-    has(value, 'id') && has(value, 'values');
-
-export const isGeneratedComponentArray = 
-  (value: any[]): value is GeneratedComponent[] =>
-    value.length > 0 && value.every(val => isGeneratedComponent(val));
-
-export const isComponentProperty =
-  (value: any): value is ComponentProperty =>
-    has(value, 'allowed') || has(value, 'custom');
+import { isPlainObject, has } from 'lodash';
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
+
+export type BasicInput<V> = ComponentType<{ onChange: (value: V) => any, value: V }>;
+
+export type BasicInputDefinition<V> = {
+  render: BasicInput<V>;
+  fromJSON?: (jsonData: any) => V;
+  toJSON?: (value: V) => any;
+}
+
+export type ComponentListProp<T> = 'any' | { custom?: T[], allowed?: string[] };
+
+export type ComponentListStructureProp = ComponentListProp<Structure>;
+export type BasicProp = ComponentType<any> | BasicInputDefinition<any>;
+
+// <CL, BI, CLK extends keyof CL, BIK extends keyof BI> look at mobx-react.d.ts
+export type Structure = {
+  id: string;
+  name: string;
+  component: ComponentType<any>; // TODO: any should match with props
+  componentListProps: {
+    [property: string]: ComponentListStructureProp; // allowed is the list of top level Structure ids
+  }
+  basicInputProps: {
+    [property: string]: BasicProp;
+  },
+  defaultValues: GuiComponentValues;
+}
+
+export type ConfigStructure = Omit<Structure, 'componentListProps' | 'basicInputProps'> & {
+  propertyTypes: {
+    [property: string]: ComponentListProp<ConfigStructure> | BasicProp;
+  }
+}
+
+export type GuiComponentValues = {
+  [property: string]: any;
+}
+
+export type GuiComponent = {
+  id: string;
+  componentType: string;
+  values: GuiComponentValues;
+}
+
+export type BasicInputComponent<V> = { onChange: (value: V) => any; value: V };
+
+// Helper Functions
+
+export const isComponentListProp = <T>(value: any): value is ComponentListProp<T> =>
+  value === 'any' || (isPlainObject(value) && (has(value, 'custom') || has(value, 'allowed')));

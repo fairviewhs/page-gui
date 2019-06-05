@@ -1,10 +1,8 @@
 import React, { ReactNode, Component, ReactNodeArray } from 'react';
-import classNames from 'classnames';
-import StringRender from '../BaseComponents/StringRender';
 
 export interface BlockSectionProps {
   title: string;
-  mode: StringRender;
+  mode: string;
   children: ReactNode|ReactNodeArray;
 }
 
@@ -27,7 +25,7 @@ export default class BlockSection extends Component<BlockSectionProps, any> {
 
   public render() {
     const { title, children } = this.props;
-    const mode = this.props.mode.props.children;
+    const mode = this.props.mode;
     /*var sectionClass = classNames({
       sectionBlock: true,
       expand: this.props.mode == "expand",
