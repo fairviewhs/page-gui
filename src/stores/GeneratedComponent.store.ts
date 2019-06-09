@@ -205,7 +205,7 @@ export class GeneratedComponentStore {
     this.components = this.filter(componentToMove);
   }
 
-  @action move = (id: string, toId: string) => {
+  @action move = (id: string, toId: string, direction: 'above' | 'below') => {
     console.log({id, toId})
     const foundComponent = this.find(comp => comp.id === id);
 
@@ -222,7 +222,10 @@ export class GeneratedComponentStore {
     console.log({ parent, foundComponent })
 
     if (!parent) { // The child is a root component
-      const wantedIndex = filtered.findIndex(comp => comp.id === toId);
+      let wantedIndex = filtered.findIndex(comp => comp.id === toId);
+      if (direction === 'below') {
+        wantedIndex = wantedIndex + 1;
+      }
       this.components = [
         ...filtered.slice(0, wantedIndex),
         foundComponent,
@@ -233,14 +236,18 @@ export class GeneratedComponentStore {
         if (component.id === parent.parent.id) {
           const componentList = (component.values[parent.propertyName] as GeneratedComponent[])//.filter(child => child.id !== componentId);
           // const wantedIndex = componentList.findIndex(comp => comp.id === toId);
+          let wantedIndex = parent.index;
+          if (direction === 'below') {
+            wantedIndex = wantedIndex + 1;
+          }
           console.log(new GeneratedComponent({
             ...component,
             values: {
               ...component.values,
               [parent.propertyName]: [
-                ...componentList.slice(0, parent.index),
+                ...componentList.slice(0, wantedIndex),
                 foundComponent,
-                ...componentList.slice(parent.index)
+                ...componentList.slice(wantedIndex)
               ] as GeneratedComponent[]
             }
           }))
@@ -249,9 +256,9 @@ export class GeneratedComponentStore {
             values: {
               ...component.values,
               [parent.propertyName]: [
-                ...componentList.slice(0, parent.index),
+                ...componentList.slice(0, wantedIndex),
                 foundComponent,
-                ...componentList.slice(parent.index)
+                ...componentList.slice(wantedIndex)
               ] as GeneratedComponent[]
             }
           });

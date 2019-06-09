@@ -105,7 +105,6 @@ class App extends Component<AppProps, AppState> {
             onAddComponent={this.handleAdd}
             componentStructures={this.props.componentStructureStore.componentStructures}
           />
-          <button onClick={this.generateHtml}>Generate HTML</button>
         </div>
         </div>
         <div id="component-wrapper">
@@ -113,6 +112,7 @@ class App extends Component<AppProps, AppState> {
             onClick={this.handleSelect}
             componentList={this.props.generatedComponentStore.components}
             componentTypes={this.props.componentStructureStore.componentStructures}
+            moveComponent={this.props.generatedComponentStore.move}
           />
         </div>
         <div id="modal">
