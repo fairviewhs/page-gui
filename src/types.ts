@@ -50,5 +50,8 @@ export type BasicInputComponent<V> = { onChange: (value: V) => any; value: V };
 
 // Helper Functions
 
+export const isBasicInputDefinition = <T>(value: any): value is BasicInputDefinition<T> =>
+  isPlainObject(value) && has(value, 'render');
+
 export const isComponentListProp = <T>(value: any): value is ComponentListProp<T> =>
   value === 'any' || (isPlainObject(value) && (has(value, 'custom') || has(value, 'allowed')));
