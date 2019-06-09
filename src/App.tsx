@@ -88,7 +88,7 @@ class App extends Component<AppProps, AppState> {
       null;
 
     const selectedGeneratedComponent = this.props.generatedComponentStore.find(component => component.id === this.state.selectedId);
-    const selectedChildComponentStructures = !!selectedGeneratedComponent ? selectedGeneratedComponent.flattedComponentListProps : null;
+    const selectedChildComponentStructures = !!selectedGeneratedComponent ? selectedGeneratedComponent.flattenComponentListStructures : null;
 
     return (
       <div id="main-wrapper">
