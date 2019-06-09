@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { GeneratedComponent } from './GeneratedComponent';
-import { Structure, Placeholder } from './types';
+import { Structure } from './types';
 import { ConnectDragSource, ConnectDropTarget, DropTarget, DropTargetMonitor, DragSource, XYCoord } from 'react-dnd';
 import ItemTypes from './ItemTypes'
 import { findDOMNode } from 'react-dom';
