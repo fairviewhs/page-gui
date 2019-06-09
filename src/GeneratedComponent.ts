@@ -1,8 +1,7 @@
 import uuid from 'uuid/v4';
 import { has } from 'lodash';
-import { Structure, BasicInputDefinition } from './types';
+import { Structure, isBasicInputDefinition } from './types';
 import componentStructureStore from './stores/ComponentStructure.store';
-import { isPlainObject } from 'lodash';
 
 export class GeneratedComponent {
   public readonly id: string;
