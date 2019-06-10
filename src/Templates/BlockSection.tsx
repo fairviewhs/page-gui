@@ -9,7 +9,7 @@ export interface BlockSectionProps {
 /* possible states:
  * banner (banner at top)
  * section (card style header)
- *  accordian (section with dropdown)
+ *  accordion (section with dropdown)
  * subsection (small banner style header)
  */
 
@@ -58,7 +58,6 @@ export default class BlockSection extends Component<BlockSectionProps, any> {
         </div>
       );
     } else if (mode == "section"){
-      // TODO: accordian
       return (
         <div className="sectionBlock">
           <div className="sectionHeader">
@@ -67,6 +66,21 @@ export default class BlockSection extends Component<BlockSectionProps, any> {
           <div className="sectionBody">
             {children}
           </div>
+        </div>
+      );
+    } else if (mode == "accordion"){
+      return (
+        <div className="sectionBlock">
+          <div className="sectionHeader">
+            <h2>{title}</h2>
+            <div className={this.state.isToggled ? "t-accordion-arrow-d" : "t-accordion-arrow-u"} onClick={this.toggle}></div>
+          </div>
+
+          {this.state.isToggled || 
+            <div className="sectionBody">
+              {children}
+            </div>
+          }
         </div>
       );
     } else if (mode == "subsection"){

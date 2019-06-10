@@ -30,7 +30,7 @@ const config = {
       name: 'Section',
       propertyTypes: {
         title: StringInput,
-        mode: makeDropdownInput(["banner", "section", "subsection", "accordian"]),
+        mode: makeDropdownInput(["banner", "section", "subsection", "accordion"]),
         children: 'any'
       },
       defaultValues: {

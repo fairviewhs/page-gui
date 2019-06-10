@@ -27,6 +27,7 @@
         color: #fff;
         display: flex;
         padding: .5rem .5rem .5rem 1.5rem;
+        justify-content: space-between;
 
         h2 {
             margin: 0;
@@ -84,13 +85,13 @@
 
 .paddedText{
     margin: 0;
-    padding: 1rem;
+    padding: 0.5rem;
 }
 
 .paddedImage {
     @extend .paddedText;
-    max-width: 95%;
-    max-height: 95%;
+    max-width: calc(100% - 1rem);
+    max-height: calc(100% - 1rem);
 }
 
 .marginCard {
