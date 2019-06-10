@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { EditorState, Editor } from 'draft-js';
+import { EditorState, Editor } from 'draft-js-plugins-editor';
 
 export default class Paragraph extends Component<{value: EditorState}, any> {
   public render() {

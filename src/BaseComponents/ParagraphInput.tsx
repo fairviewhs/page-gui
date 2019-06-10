@@ -1,6 +1,6 @@
-import React, { Component, KeyboardEvent, MouseEvent } from 'react';
+/*import React, { Component, KeyboardEvent, MouseEvent } from 'react';
 import { BasicInputComponent } from '../types';
-import { Editor, EditorState, RichUtils, getDefaultKeyBinding, DraftBlockType, DraftEditorCommand, DraftHandleValue, ContentBlock } from 'draft-js';
+import { Editor, EditorState, RichUtils, getDefaultKeyBinding, DraftBlockType, DraftEditorCommand, DraftHandleValue, ContentBlock } from 'draft-js-plugins-editor';
 import classNames from 'classnames';
 
 export default class ParagraphInput extends Component<BasicInputComponent<EditorState>, any> {
@@ -25,7 +25,7 @@ export default class ParagraphInput extends Component<BasicInputComponent<Editor
         const newEditorState = RichUtils.onTab(
           event,
           this.props.value,
-          4, /* maxDepth */
+          4, // maxDepth
         );
         if (newEditorState !== this.props.value) {
           this.onChange(newEditorState);
@@ -183,4 +183,77 @@ const InlineStyleControls = (props) => {
       )}
     </div>
   );
-};
+};*/
+
+
+import React, { Component, Fragment } from 'react';
+import { BasicInputComponent } from '../types';
+import Editor, { createEditorStateWithText, EditorState } from 'draft-js-plugins-editor';
+import { KeyBindingUtil, RichUtils, getDefaultKeyBinding } from 'draft-js';
+import createInlineToolbarPlugin from 'draft-js-inline-toolbar-plugin';
+import createLinkPlugin from 'draft-js-anchor-plugin';
+import { ItalicButton, BoldButton, UnderlineButton, HeadlineOneButton, HeadlineTwoButton, HeadlineThreeButton, UnorderedListButton, OrderedListButton } from 'draft-js-buttons';
+import { element } from 'prop-types';
+import classNames from 'classnames';
+
+import createToolbarPlugin from 'draft-js-static-toolbar-plugin';
+
+import buttonStyles from './buttonStyles.module.css';
+import toolbarStyles from './toolbarStyles.module.css';
+
+const linkPlugin = createLinkPlugin();
+const staticToolbarPlugin = createToolbarPlugin({
+  theme: { buttonStyles, toolbarStyles }
+});
+const { Toolbar } = staticToolbarPlugin;
+const plugins = [staticToolbarPlugin, linkPlugin];
+
+
+export default class ParagraphInput extends Component<BasicInputComponent<EditorState>, any> {
+  editor: null | Editor = null;
+
+  onChange = (editorState: EditorState) => {
+    this.setState({ editorState });
+    this.props.onChange(editorState)
+  }
+
+  focus = () =>
+    this.editor.focus();
+
+  render() {
+    const className = classNames('RichEditor-editor')
+    const editorState = this.props.value;
+
+    return (
+      <Fragment>
+        <div onClick={this.focus} className={className}>
+          <Editor
+            editorState={editorState}
+            onChange={this.onChange}
+            plugins={plugins}
+            ref={(element) => { this.editor = element; }}
+            spellCheck={true}
+          />
+        </div>
+        <Toolbar>
+        {
+              (externalProps) => (
+                <Fragment>
+                  <HeadlineOneButton {...externalProps} />
+                  <HeadlineTwoButton {...externalProps} />
+                  <HeadlineThreeButton {...externalProps} />
+                  <UnorderedListButton {...externalProps} />
+                  <OrderedListButton {...externalProps} />
+
+                  <BoldButton {...externalProps} />
+                  <ItalicButton {...externalProps} />
+                  <UnderlineButton {...externalProps} />
+                  <linkPlugin.LinkButton {...externalProps} />
+                </Fragment>
+              )
+            }
+        </Toolbar>
+      </Fragment>
+    );
+  }
+}

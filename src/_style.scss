@@ -114,9 +114,18 @@
 }
 
 .RichEditor-editor {
-    max-height: 20rem;
+    max-height: 50vh;
+    min-height: 10vh;
     overflow: auto;
-    background-color: white;
+    background-color:white !important;
+    padding: 0.5rem;
+    border-radius: 2px;
+    box-shadow: inset 0 0 2px #AAA;
+}
+
+.RichEditor-toolbar {
+    background-color: red;
+    transform: translate(0) !important;
 }
 
 @media only screen and (max-width: 600px) {

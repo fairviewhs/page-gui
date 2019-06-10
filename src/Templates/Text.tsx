@@ -8,9 +8,9 @@ export interface TextProps{
 export default class Text extends Component<TextProps, any> {
   public render() {
     return (
-      <p className="paddedText">
+      <div className="paddedText">
         <Editor readOnly editorState={this.props.text} onChange={() => {}} />
-      </p>
+      </div>
     );
   }
 }
