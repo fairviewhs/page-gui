@@ -12,6 +12,10 @@ import Column from "./Templates/Column";
 import Columns from "./Templates/Columns";
 import Text from "./Templates/Text";
 import Image from "./Templates/Image";
+import Table from "./Templates/Table/Table";
+import TableRow from "./Templates/Table/TableRow";
+import TableColumn from "./Templates/Table/TableColumn"
+
 import { ConfigStructure } from "./types";
 
 const paragraphInput = {
@@ -94,6 +98,49 @@ const config = {
         url: 'https://images.pexels.com/photos/104827/cat-pet-animal-domestic-104827.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500'
       }
     },
+    {
+      id: 'text-table',
+      component: Table,
+      name: 'Text Table',
+      propertyTypes: {
+        title: StringInput,
+        children: {
+          custom: [
+            {
+              id: 'table-row',
+              name: 'Row',
+              component: TableRow,
+              propertyTypes: {
+                title: StringInput,
+                children: {
+                  custom: [
+                    {
+                      id: 'table-col',
+                      name: 'Column',
+                      component: TableColumn,
+                      propertyTypes: {
+                        content: ParagraphInput
+                      },
+                      defaultValues: {
+                        content: EditorState.createEmpty()
+                      }
+                    }
+                  ]
+                }
+              },
+              defaultValues: {
+                title: 'Row',
+                children: []
+              }
+            }
+          ]
+        }
+      },
+      defaultValues: {
+        title: 'hello world',
+        children: []
+      }
+    }
 
     // {
     //   id: 'ribbon',

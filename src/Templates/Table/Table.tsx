@@ -1,7 +1,8 @@
-import React, { Component } from 'react';
+import React, { Component, ReactNode, ReactNodeArray } from 'react';
 
 export interface TableProps {
   title: string;
+  children: ReactNode|ReactNodeArray;
 }
 
 export default class Table extends Component<TableProps, any> {
